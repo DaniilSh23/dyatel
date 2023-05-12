@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block 'body' %}
+    <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-12 col-md-7 col-lg-7 col-xl-7 mx-auto">
+
+                    <div class="shadow-sm">
+                        <div class="app-card p-5">
+                            <div class="text-center mb-4">
+                                <h1 class="page-title">📱<br><span class="font-weight-light">Подключение телефона</span><br></h1>
+                            </div>
+                            <hr>
+
+            <!--            ИНФОРМАЦИЯ О КОМПАНИИ-->
+                            <div class="auth-form-container text-left">
+<!--                                <form class="auth-form resetpass-form">-->
+<!--                                    <div class="email mb-3 d-flex justify-content-between">-->
+<!--                                        <label class="sr-only" for="reg-email">Your Email</label>-->
+<!--                                        <input id="reg-email" name="reg-email" type="email" class="form-control login-email w-50" placeholder="Your Email" required="required">-->
+<!--                                        <button type="submit" class="btn app-btn-primary btn-block theme-btn mx-auto w-25">Reset Password</button>-->
+<!--                                    </div>-->
+<!--                                </form>-->
+                                <div class="col-md-10">
+                                    <form>
+                                        <div class="input-group mb-3">
+                                            <input type="tel" class="form-control" placeholder="Введите номер телефона" aria-label="Введите номер телефона" aria-describedby="basic-addon2">
+                                            <button class="btn app-btn-primary" type="submit">Получить код</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div><!--//col-->
+            </div><!--//row-->
+        </div>
+    </div>
+{% endblock %}

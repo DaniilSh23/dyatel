@@ -1,0 +1,7 @@
+.bg-space {
+    background-color: #34495e; /* dark gray /
+    background-image: linear-gradient(#6a89cc, #34495e); / gradient from light blue to dark gray */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}

@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>🐦Дятел. Статистика</title>
+
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+        <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!-- FontAwesome JS-->
+        <script defer src="/static/assets/plugins/fontawesome/js/all.min.js"></script>
+
+        <!-- App CSS -->
+        <link id="theme-style" rel="stylesheet" href="/static/assets/css/portal.css">
+
+        <!--	Сторонняя библиотека с анимациями, кот. называется animate.css-->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            />
+
+    </head>
+
+    <body class="app">
+
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript" >
+           (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+           m[i].l=1*new Date();
+           for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+           k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+           (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+           ym(92703690, "init", {
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true,
+                webvisor:true
+           });
+        </script>
+        <noscript><div><img src="https://mc.yandex.ru/watch/92703690" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+
+    <header class="app-header fixed-top">
+            <div class="app-header-inner">
+                <div class="container-fluid py-2">
+                    <div class="app-header-content">
+                        <div class="row justify-content-between align-items-center">
+
+                        <div class="col-auto">
+                            <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg>
+                            </a>
+                        </div><!--//col-->
+
+                        <!--ЭЛЕМЕНТЫ СПРАВА В ХЭДЕРЕ-->
+                        <div class="app-utilities col-auto">
+
+<!--                            БАЛАНС С ВЫПАДАЮЩИМ СПИСКОМ ДЕТАЛЕЙ ПО ФИНАНСАМ-->
+                            <div class="app-utility-item app-notifications-dropdown dropdown">
+                                <a class="dropdown-toggle no-toggle-arrow" id="notifications-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" title="Notifications">
+                                    <strong>{{ balance }} ₽</strong>
+                                    <div class="app-icon-holder">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-credit-card" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                          <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                        </svg>
+<!--                                        <span class="icon-badge">New</span>-->
+                                    </div><!--//icon-holder-->
+                                </a><!--//dropdown-toggle-->
+
+    <!--                        Иконка финансов-->
+                                <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
+
+                                    <div class="dropdown-menu-header p-3">
+                                        <h5 class="dropdown-menu-title mb-2">Финансы</h5>
+            <!--                        Строка с балансом-->
+                                        <form class="settings-form" method="post" action="{% url 'app_users:replenish_balance' %}">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                <span class="input-group-text">💰 Баланс: </span>
+                                                <span class="input-group-text">{{ balance }}</span>
+                                                <span class="input-group-text">₽</span>
+                                                <button type="submit" class="btn app-btn-primary">💳 Пополнить</button>
+                                            </div>
+                                        </form>
+                                    </div><!--//dropdown-menu-title-->
+
+<!--                            Элементы списка в деталях баланса-->
+						        <div class="dropdown-menu-content">
+
+                                    {% for i_transaction in transactions_lst %}
+                                       <div class="item p-3">
+                                            <div class="row gx-2 justify-content-between align-items-center">
+                                                <div class="col-auto">
+    <!--										       <img class="profile-image" src="/static/assets/images/profiles/profile-1.png" alt="">-->
+                                                    {% if i_transaction.transaction_type == 'write-off' %} ➖ {% else %} ➕ {% endif %}
+                                                </div><!--//col-->
+                                                <div class="col-auto">
+                                                    💵 <strong>{{ i_transaction.amount }} ₽</strong>
+                                                </div><!--//col-->
+                                                <div class="col">
+                                                    <div class="desc">{{ i_transaction.description }}</div>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                            <a class="link-mask" href="{% url 'app_users:wallet' %}"></a>
+                                       </div><!--//item-->
+                                    {% endfor %}
+
+                                    <div class="dropdown-menu-footer p-2 text-center">
+                                        <a href="{% url 'app_users:wallet' %}">Посмотреть всё</a>
+                                    </div>
+                                </div>
+							</div><!--//dropdown-menu-->
+				        </div><!--//app-utility-item-->
+
+                            <div class="app-utility-item app-user-dropdown dropdown">
+<!--                                    <a class="btn app-btn-secondary" href="{% url 'app_users:logout' %}">Выйти</a>-->
+<!--    				            <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="/static/assets/images/user.png" alt="user profile"></a>-->
+
+<!--                            ПРИВЕТСТВИЕ ЮЗЕРА И ВЫПАДАЮЩИЙ СПИСОК-->
+                                <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                    <b>👋Привет, <u>{{ request.user.username }}</u></b>
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12 1H4a1 1 0 0 0-1 1v10.755S4 11 8 11s5 1.755 5 1.755V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>
+                                            <path fill-rule="evenodd" d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        </svg>
+                                    </span>
+                                </a>
+    				            <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+    								<li><a class="dropdown-item" href="{% url 'app_users:account' %}">Личный кабинет</a></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:wallet' %}">Кошелёк</a></li>
+    								<li><hr class="dropdown-divider"></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:logout' %}">Выйти</a></li>
+    							</ul>
+                            </div><!--//app-user-dropdown-->
+                        </div><!--//app-utilities-->
+
+                    </div><!--//row-->
+                    </div><!--//app-header-content-->
+                </div><!--//container-fluid-->
+            </div><!--//app-header-inner-->
+            <div id="app-sidepanel" class="app-sidepanel sidepanel-hidden">
+                <div id="sidepanel-drop" class="sidepanel-drop"></div>
+                <div class="sidepanel-inner d-flex flex-column">
+                    <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+                    <div class="app-branding">
+                        <a class="app-logo" href="{% url 'app_collector:mailing' %}"><img class="logo-icon me-2" src="/static/assets/images/app-logo-1.jpg" alt="logo"><span class="logo-text">DYATEL</span></a>
+                    </div><!--//app-branding-->
+                    <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                        <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/mailing/">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                            <path fill-rule="evenodd" d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+                                            <circle cx="3.5" cy="5.5" r=".5"/>
+                                            <circle cx="3.5" cy="8" r=".5"/>
+                                            <circle cx="3.5" cy="10.5" r=".5"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Рассылка</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/statistic">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bar-chart-line" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Статистика</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="#"  onclick="readUsModal()">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-headset" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 1a5 5 0 0 0-5 5v4.5H2V6a6 6 0 1 1 12 0v4.5h-1V6a5 5 0 0 0-5-5z"></path>
+                                            <path d="M11 8a1 1 0 0 1 1-1h2v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V8zM5 8a1 1 0 0 0-1-1H2v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V8z"></path>
+                                            <path fill-rule="evenodd" d="M13.5 8.5a.5.5 0 0 1 .5.5v3a2.5 2.5 0 0 1-2.5 2.5H8a.5.5 0 0 1 0-1h3.5A1.5 1.5 0 0 0 13 12V9a.5.5 0 0 1 .5-.5z"></path>
+                                            <path d="M6.5 14a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Напишите нам</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                        </ul><!--//app-menu-->
+                    </nav><!--//app-nav-->
+                    <div class="app-sidepanel-footer">
+                        <nav class="app-nav app-nav-footer">
+                            <ul class="app-menu footer-menu list-unstyled">
+                            </ul><!--//footer-menu-->
+                        </nav>
+                    </div><!--//app-sidepanel-footer-->
+                </div><!--//sidepanel-inner-->
+            </div><!--//app-sidepanel-->
+        </header><!--//app-header-->
+
+
+        
+        <!-- Напишите нам. Модальное окно-->
+        <!-- Modal -->
+        <div class="modal fade" id="readUsModal" tabindex="-1" aria-labelledby="readUs-downloadLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg1">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="readUs-downloadLabel">Форма обратной связи</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="" method="post" action="{% url 'app_collector:feedback' %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <!-- modal-body -->
+                            <div class="row g-1 settings-section  p-3">
+                                <div class="col-12">
+                                    <h5 class="text-center text-primary">Напишите нам</h5>
+                                    <div class="app-card app-card-settings">
+                                        <div class="app-card-body">
+                                            <div class="form-floating">
+                                                {{ feedback_form.feedback_text }}
+<!--                                                <textarea style="height: 200px" class="form-control" id="text-read-us"></textarea>-->
+                                                <!-- <label for="text-read-us">Текст...</label>-->
+                                            </div>
+                                        </div><!--//app-card-body-->
+                                    </div><!--//app-card-->
+                                </div>
+                            </div><!--//row-->
+                            <!-- //modal-body -->
+
+                        </div>      
+                        <div class="modal-footer">
+                            <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn app-btn-primary" >Отправить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <script>
+           // Показать форму Напишите нам
+            function readUsModal() {
+                var formReadUsModal = new bootstrap.Modal(document.getElementById('readUsModal'));
+                formReadUsModal.show(); 
+            }    
+        </script>   
+        
+        
+        <!--	ВЫШЕ МЕНЮ-->
+
+        <div class="app-wrapper">
+            <div class="app-content pt-3 p-md-3 p-lg-4">
+                <div class="container-xl">
+                    <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                        <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">Все</a>
+                        <a class="flex-sm-fill text-sm-center nav-link"  id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Отправлены</a>
+                        <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">В очереди</a>
+                        <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Не отправлены</a>
+                    </nav>
+                    <div class="tab-content" id="orders-table-tab-content">
+                        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive">
+                                        <table class="table app-table-hover mb-0 text-left">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cell">№</th>
+                                                    <th class="cell">Клиент</th>
+                                                    <th class="cell">Телефон/@username</th>
+                                                    <th class="cell">Текст сообщения</th>
+                                                    <th class="cell col-sm-1">Дата платежа</th>
+                                                    <th class="cell">Cумма</th>
+                                                    <th class="cell col-sm-1">Дата отправки</th>
+                                                    <th class="cell">Статус</th>
+                                                    <!--												<th class="cell"></th>-->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for i_client in clients_lst %}
+                                                <tr>
+                                                    <td class="cell">{{ i_client.numb }}</td>
+                                                    <td class="cell">{{ i_client.client_name }}</td>
+                                                    <td class="cell">{{ i_client.contact }}</td>
+                                                    <td class="cell"><span class="truncate">{{ i_client.mlng_txt }}</span></td>
+                                                    <td class="cell"><span>{{ i_client.pmnt_date }}</span></td>
+                                                    <td class="cell">{{ i_client.amount_of_pmnt }}</td>
+                                                    <td class="cell"><span>{{ i_client.sent_date }}</span><span class="note">{{ i_client.sent_time }}</span></td>
+                                                    <td class="cell"><span class="badge {{ i_client.status_badge }}">{{ i_client.sending_status }}</span></td>
+                                                    <td class="cell"><a class="btn-sm app-btn-secondary" href="#" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ i_client.send_info }}">INFO</a></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div><!--//table-responsive-->
+
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+
+                            <!--ПАГИНАЦИЯ ДЛЯ ТАБЛИЦЫ-->
+                            <nav class="app-pagination">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item {
+                                            % if not clients_lst.has_previous %
+                                        }
+                                        disabled {
+                                            % endif %
+                                        }">
+                                        <a
+                                            class="page-link"
+                                            href="{% if clients_lst.has_previous %} {% url 'app_collector:stat_lst_page' clients_lst.previous_page_number %} {% else %} # {% endif %}"
+                                            tabindex="-1" aria-disabled="true"
+                                            >Назад</a>
+                                    </li>
+                                    {% for i_page in clients_lst.paginator.page_range %}
+                                    <li class="page-item {
+                                            % if clients_lst.number == i_page %
+                                        }
+                                        active {
+                                            % endif %
+                                        }">
+                                        <a class="page-link" href="{% url 'app_collector:stat_lst_page' i_page %}">{{ i_page }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    <!--                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>-->
+                                    <!--                                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+                                    <!--                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+                                    <li class="page-item {
+                                            % if not clients_lst.has_next %
+                                        }
+                                        disabled {
+                                            % endif %
+                                        }">
+                                        <a
+                                            class="page-link"
+                                            href="{% if clients_lst.has_next %} {% url 'app_collector:stat_lst_page' clients_lst.next_page_number %} {% else %} # {% endif %}"
+                                            >Вперёд</a>
+                                    </li>
+                                </ul>
+                            </nav><!--//app-pagination-->
+
+                        </div><!--//tab-pane-->
+                        <!--ВКЛАДКА ОТПРАВЛЕННЫХ РАССЫЛОК-->
+                        <div class="tab-pane fade" id="orders-paid" role="tabpanel" aria-labelledby="orders-paid-tab">
+                            <div class="app-card app-card-orders-table mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive">
+
+                                        <table class="table mb-0 text-left">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cell">№</th>
+                                                    <th class="cell">Клиент</th>
+                                                    <th class="cell">Телефон/@username</th>
+                                                    <th class="cell">Текст сообщения</th>
+                                                    <th class="cell col-sm-1">Дата платежа</th>
+                                                    <th class="cell">Cумма</th>
+                                                    <th class="cell col-sm-1">Дата отправки</th>
+                                                    <th class="cell">Статус</th>
+                                                    <!--												<th class="cell"></th>-->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for i_client in clients_lst %}
+                                                {% if i_client.sending_status == 'отправлено' %}
+                                                <tr>
+                                                    <td class="cell">{{ i_client.numb }}</td>
+                                                    <td class="cell">{{ i_client.client_name }}</td>
+                                                    <td class="cell">{{ i_client.contact }}</td>
+                                                    <td class="cell"><span class="truncate">{{ i_client.mlng_txt }}</span></td>
+                                                    <td class="cell"><span>{{ i_client.pmnt_date }}</span></td>
+                                                    <td class="cell">{{ i_client.amount_of_pmnt }}</td>
+                                                    <td class="cell"><span>{{ i_client.sent_date }}</span><span class="note">{{ i_client.sent_time }}</span></td>
+                                                    <td class="cell"><span class="badge {{ i_client.status_badge }}">{{ i_client.sending_status }}</span></td>
+                                                    <!--												<td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>-->
+                                                </tr>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div><!--//table-responsive-->
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//tab-pane-->
+                        <!--ВКЛАДКА РАССЫЛОК В ОЧЕРЕДИ-->
+                        <div class="tab-pane fade" id="orders-pending" role="tabpanel" aria-labelledby="orders-pending-tab">
+                            <div class="app-card app-card-orders-table mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 text-left">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cell">№</th>
+                                                    <th class="cell">Клиент</th>
+                                                    <th class="cell">Телефон/@username</th>
+                                                    <th class="cell">Текст сообщения</th>
+                                                    <th class="cell col-sm-1">Дата платежа</th>
+                                                    <th class="cell">Cумма</th>
+                                                    <th class="cell col-sm-1">Дата отправки</th>
+                                                    <th class="cell">Статус</th>
+                                                    <!--												<th class="cell"></th>-->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for i_client in clients_lst %}
+                                                {% if i_client.sending_status == 'в очереди' %}
+                                                <tr>
+                                                    <td class="cell">{{ i_client.numb }}</td>
+                                                    <td class="cell">{{ i_client.client_name }}</td>
+                                                    <td class="cell">{{ i_client.contact }}</td>
+                                                    <td class="cell"><span class="truncate">{{ i_client.mlng_txt }}</span></td>
+                                                    <td class="cell"><span>{{ i_client.pmnt_date }}</span></td>
+                                                    <td class="cell">{{ i_client.amount_of_pmnt }}</td>
+                                                    <td class="cell"><span>{{ i_client.sent_date }}</span><span class="note">{{ i_client.sent_time }}</span></td>
+                                                    <td class="cell"><span class="badge {{ i_client.status_badge }}">{{ i_client.sending_status }}</span></td>
+                                                    <!--												<td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>-->
+                                                </tr>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div><!--//table-responsive-->
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//tab-pane-->
+                        <!--ВКЛАДКА НЕ ОТПРАВЛЕННЫХ РАССЫЛОК-->
+                        <div class="tab-pane fade" id="orders-cancelled" role="tabpanel" aria-labelledby="orders-cancelled-tab">
+                            <div class="app-card app-card-orders-table mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive">
+                                        <table class="table mb-0 text-left">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cell">№</th>
+                                                    <th class="cell">Клиент</th>
+                                                    <th class="cell">Телефон/@username</th>
+                                                    <th class="cell">Текст сообщения</th>
+                                                    <th class="cell col-sm-1">Дата платежа</th>
+                                                    <th class="cell">Cумма</th>
+                                                    <th class="cell col-sm-1">Дата отправки</th>
+                                                    <th class="cell">Статус</th>
+                                                    <!--												<th class="cell"></th>-->
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for i_client in clients_lst %}
+                                                {% if i_client.sending_status == 'не отправлено' %}
+                                                <tr>
+                                                    <td class="cell">{{ i_client.numb }}</td>
+                                                    <td class="cell">{{ i_client.client_name }}</td>
+                                                    <td class="cell">{{ i_client.contact }}</td>
+                                                    <td class="cell"><span class="truncate">{{ i_client.mlng_txt }}</span></td>
+                                                    <td class="cell"><span>{{ i_client.pmnt_date }}</span></td>
+                                                    <td class="cell">{{ i_client.amount_of_pmnt }}</td>
+                                                    <td class="cell"><span>{{ i_client.sent_date }}</span><span class="note">{{ i_client.sent_time }}</span></td>
+                                                    <td class="cell"><span class="badge {{ i_client.status_badge }}">{{ i_client.sending_status }}</span></td>
+                                                    <!--												<td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>-->
+                                                </tr>
+                                                {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div><!--//table-responsive-->
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//tab-pane-->
+                    </div><!--//tab-content-->
+                </div>
+            </div>
+
+            <footer class="app-footer">
+                <div class="container text-center py-3">
+                    <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+                    <small class="copyright">With love <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> from <a class="app-link" href="https://cfunalog.ru/" target="_blank">CFU</a></small>
+                </div>
+            </footer><!--//app-footer-->
+
+        </div>
+
+
+        <!-- Javascript -->
+        <script src="/static/assets/plugins/popper.min.js"></script>
+        <script src="/static/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+        <script>
+            window.onload = function() {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                })
+            }
+        </script>
+
+        <!--Написал мне chatgpt-->
+        <script>
+function addRow2() {
+    // Get the value of the textarea in the form
+    var client = document.querySelector("#pop-upFeld6").value;
+
+    // Get the table body
+    var tableBody = document.querySelector("table tbody");
+
+    // Check if the third column of the table is empty
+    if (tableBody.rows.length === 0 || tableBody.rows[0].cells[2].textContent === "") {
+        // Create a new row
+        var newRow = tableBody.insertRow();
+
+        // Insert the client text in the third column
+        var clientCell = newRow.insertCell(2);
+        clientCell.innerHTML = client;
+    }
+}
+        </script>
+        <script>
+            const table = document.querySelector("#orders-table-tab-content");
+            table.addEventListener("click", function (e) {
+                if (e.target.classList.contains("delete-btn")) {
+                    // delete the row
+                    const row = e.target.closest("tr");
+                    row.remove();
+                } else if (e.target.classList.contains("edit-btn")) {
+                    // turn the row into an edit form
+                    const row = e.target.closest("tr");
+                    let field1 = row.querySelector("td:first-child").textContent;
+                    let field2 = row.querySelector("td:nth-child(2)").textContent;
+                    let field3 = row.querySelector("td:nth-child(3)").textContent;
+                    let field4 = row.querySelector("td:nth-child(4)").textContent;
+                    let field5 = row.querySelector("td:nth-child(5)").textContent;
+
+                    row.innerHTML = `
+                        <td>${field1}</td>
+                        <td>${field2}</td>
+                        <td>${field3}</td>
+                        <td>${field4}</td>
+                        <td>${field5}</td>
+                        <td>
+                          <button class="save-btn">Save</button>
+                          <button class="cancel-btn">Cancel</button>
+                        </td>
+                  `;
+                } else if (e.target.classList.contains("cancel-btn")) {
+                    // turn the form back into a row
+                    const form = e.target.closest("tr");
+                    const field1 = form.getElementById("pop-upFeld1").value;
+                    const field2 = form.getElementById("pop-upFeld2").value;
+                    const field3 = form.getElementById("pop-upFeld3").value;
+                    const field4 = form.getElementById("pop-upFeld4").value;
+                    const field5 = form.getElementById("pop-upFeld5").value;
+
+                    form.innerHTML = `
+                        <td>${field1}</td>
+                        <td>${field2}</td>
+                        <td>${field3}</td>
+                        <td>${field4}</td>
+                        <td>${field5}</td>
+                        <td>
+                          <button class="edit-btn">Edit</button>
+                          <button class="delete-btn">Delete</button>
+                        </td>
+                  `;
+                } else if (e.target.classList.contains("save-btn")) {
+                    // save the changes to the row
+                    const form = e.target.closest("tr");
+                    const field1 = form.getElementById("pop-upFeld1").value;
+                    const field2 = form.getElementById("pop-upFeld2").value;
+                    const field3 = form.getElementById("pop-upFeld3").value;
+                    const field4 = form.getElementById("pop-upFeld4").value;
+                    const field5 = form.getElementById("pop-upFeld5").value;
+
+                    form.innerHTML = `
+                        <td>${field1}</td>
+                        <td>${field2}</td>
+                        <td>${field3}</td>
+                        <td>${field4}</td>
+                        <td>${field5}</td>
+                        <td>
+                          <button class="edit-btn">Edit</button>
+                          <button class="delete-btn">Delete</button>
+                        </td>
+                  `;
+                    // You would add a save function here to persist the changes to the server
+                }
+            });
+        </script>
+        <script>
+            // Function to add a new row to the table
+            function addRow() {
+                // Get the values from the pop-up form fields
+                let field1 = document.getElementById("pop-upFeld1").value;
+                let field2 = document.getElementById("pop-upFeld2").value;
+                let field3 = document.getElementById("pop-upFeld3").value;
+                let field4 = document.getElementById("pop-upFeld4").value;
+                let field5 = document.getElementById("pop-upFeld5").value;
+
+                // Create a new row in the table
+                let newRow = `
+          <tr>
+                <td class="cell" style="word-wrap: break-word; max-width: 150px;">${field1}</td>
+                <td class="cell">${field2}</td>
+                <td class="cell" style="word-wrap: break-word; max-width: 400px;">${field3}</td>
+                <td class="cell">${field4}</td>
+                <td class="cell">${field5}</td>
+                <td class="cell col-sm-1">
+                  <a class="delete-btn btn app-btn-secondary" href="#"><svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                </svg></a>
+                </td>
+          </tr>
+        `;
+
+                // Append the new row to the table body
+                document.querySelector("table tbody").insertAdjacentHTML("beforeend", newRow);
+            }
+
+            // Function to toggle the visibility of the pop-up form
+            function toggleTable() {
+                let tableContainer = document.getElementById("table-container");
+                if (tableContainer.style.display === "none") {
+                    tableContainer.style.display = "block";
+                } else {
+                    tableContainer.style.display = "none";
+                }
+            }
+        </script>
+        <script>
+            // Select the table body
+            const tableBody = document.querySelector("tbody");
+
+            // Select the "Save" button
+            const saveButton = document.querySelector(".btn-success");
+
+            // Add an event listener to the "Save" button
+            saveButton.addEventListener("click", function (event) {
+                event.preventDefault(); // prevent the form from submitting
+
+                // Create a new table row
+                const newRow = document.createElement("tr");
+
+                // Create the form elements for the new row
+                const formRow = document.createElement("form");
+                const field1 = document.createElement("input");
+                const field2 = document.createElement("input");
+                const field3 = document.createElement("input");
+                const field4 = document.createElement("input");
+                const field5 = document.createElement("input");
+                const saveBtn = document.createElement("button");
+
+                // Add the appropriate classes and attributes to the form elements
+                formRow.classList.add("form-row");
+                field1.classList.add("form-control");
+                field1.setAttribute("type", "text");
+                field1.setAttribute("name", "field1");
+                field1.setAttribute("placeholder", "Enter Field 1");
+                field2.classList.add("form-control");
+                field2.setAttribute("type", "text");
+                field2.setAttribute("name", "field2");
+                field2.setAttribute("placeholder", "Enter Field 2");
+                field3.classList.add("form-control");
+                field3.setAttribute("type", "text");
+                field3.setAttribute("name", "field3");
+                field3.setAttribute("placeholder", "Enter Field 3");
+                field4.classList.add("form-control");
+                field4.setAttribute("type", "number");
+                field4.setAttribute("name", "field4");
+                field4.setAttribute("placeholder", "Enter Field 4");
+                field5.classList.add("form-control");
+                field5.setAttribute("type", "date");
+                field5.setAttribute("name", "field5");
+                field5.setAttribute("placeholder", "Enter Field 5");
+                saveBtn.classList.add("btn", "btn-success");
+                saveBtn.setAttribute("type", "submit");
+                saveBtn.textContent = "Save";
+
+                // Append the form elements to the new row
+                formRow.appendChild(field1);
+                formRow.appendChild(field2);
+                formRow.appendChild(field3);
+                formRow.appendChild(field4);
+                formRow.appendChild(field5);
+                formRow.appendChild(saveBtn);
+                newRow.appendChild(formRow);
+
+                // Append the new row to the table body
+                tableBody.appendChild(newRow);
+            });
+        </script>
+        <script>
+            function toggleTable() {
+                var tableContainer = document.getElementById("table-container");
+                if (tableContainer.style.display === "none") {
+                    tableContainer.style.display = "block";
+                } else {
+                    tableContainer.style.display = "none";
+                }
+            }
+        </script>
+        <!--	<script src="/static/send_table_data.js"></script>-->
+
+        <!-- Page Specific JS -->
+        <script src="/static/assets/js/app.js"></script>
+
+    </body>
+</html>
+

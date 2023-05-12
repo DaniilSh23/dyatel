@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>
+      {% block 'title' %}
+        base-template
+      {% endblock %}
+    </title>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!-- FontAwesome JS-->
+        <script defer src="/static/assets/plugins/fontawesome/js/all.min.js"></script>
+
+        <!-- App CSS -->
+        <link id="theme-style" rel="stylesheet" href="/static/assets/css/portal.css">
+        <link id="theme-style" rel="stylesheet" href="/static/assets/css/modify.css">
+
+        <!--	Сторонняя библиотека с анимациями, кот. называется animate.css-->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            />
+</head>
+
+<body class="app">
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(92703690, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/92703690" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    {% block 'header' %}
+        <header class="app-header fixed-top">
+            <div class="app-header-inner">
+                <div class="container-fluid py-2">
+                    <div class="app-header-content">
+                        <div class="row justify-content-between align-items-center">
+
+                        <div class="col-auto">
+                            <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg>
+                            </a>
+                        </div><!--//col-->
+
+                        <!--ЭЛЕМЕНТЫ СПРАВА В ХЭДЕРЕ-->
+                        <div class="app-utilities col-auto">
+
+<!--                            БАЛАНС С ВЫПАДАЮЩИМ СПИСКОМ ДЕТАЛЕЙ ПО ФИНАНСАМ-->
+                            <div class="app-utility-item app-notifications-dropdown dropdown">
+                                <a class="dropdown-toggle no-toggle-arrow" id="notifications-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" title="Notifications">
+                                    <strong>{{ balance }} ₽</strong>
+                                    <div class="app-icon-holder">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-credit-card" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                          <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                        </svg>
+<!--                                        <span class="icon-badge">New</span>-->
+                                    </div><!--//icon-holder-->
+                                </a><!--//dropdown-toggle-->
+
+    <!--                        Иконка финансов-->
+                                <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
+
+                                    <div class="dropdown-menu-header p-3 ">
+                                        <h5 class="dropdown-menu-title mb-2">Финансы</h5>
+            <!--                        Строка с балансом-->
+                                        <form class="settings-form" method="post" action="{% url 'app_users:replenish_balance' %}">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                <span class="input-group-text">💰 Баланс: </span>
+                                                <span class="input-group-text">{{ balance }}</span>
+                                                <span class="input-group-text">₽</span>
+                                                <input class="form-control" type="number" step="0.01" placeholder="Сумма пополнения" name="replenishment_amount">
+                                                <button type="submit" class="btn app-btn-primary">💳 Пополнить</button>
+                                            </div>
+                                        </form>
+                                    </div><!--//dropdown-menu-title-->
+
+<!--                            Элементы списка в деталях баланса-->
+						        <div class="dropdown-menu-content">
+
+                                    {% for i_transaction in transactions_lst %}
+                                       <div class="item p-3">
+                                            <div class="row gx-2 justify-content-between align-items-center">
+                                                <div class="col-auto">
+    <!--										       <img class="profile-image" src="/static/assets/images/profiles/profile-1.png" alt="">-->
+                                                    {% if i_transaction.transaction_type == 'write-off' %} ➖ {% else %} ➕ {% endif %}
+                                                </div><!--//col-->
+                                                <div class="col-auto">
+                                                    💵 <strong>{{ i_transaction.amount }} ₽</strong>
+                                                </div><!--//col-->
+                                                <div class="col">
+                                                    <div class="desc">{{ i_transaction.description }}</div>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                            <a class="link-mask" href="{% url 'app_users:wallet' %}"></a>
+                                       </div><!--//item-->
+                                    {% endfor %}
+
+                                    <div class="dropdown-menu-footer p-2 text-center">
+                                        <a href="{% url 'app_users:wallet' %}">Посмотреть всё</a>
+                                    </div>
+                                </div>
+							</div><!--//dropdown-menu-->
+				        </div><!--//app-utility-item-->
+
+                            <div class="app-utility-item app-user-dropdown dropdown">
+<!--                                    <a class="btn app-btn-secondary" href="{% url 'app_users:logout' %}">Выйти</a>-->
+<!--    				            <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="/static/assets/images/user.png" alt="user profile"></a>-->
+
+<!--                            ПРИВЕТСТВИЕ ЮЗЕРА И ВЫПАДАЮЩИЙ СПИСОК-->
+                                <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                    <b>👋Привет, <u>{{ request.user.username }}</u></b>
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12 1H4a1 1 0 0 0-1 1v10.755S4 11 8 11s5 1.755 5 1.755V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>
+                                            <path fill-rule="evenodd" d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        </svg>
+                                    </span>
+                                </a>
+    				            <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+    								<li><a class="dropdown-item" href="{% url 'app_users:account' %}">Личный кабинет</a></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:wallet' %}">Кошелёк</a></li>
+    								<li><hr class="dropdown-divider"></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:logout' %}">Выйти</a></li>
+    							</ul>
+                            </div><!--//app-user-dropdown-->
+                        </div><!--//app-utilities-->
+
+                    </div><!--//row-->
+                    </div><!--//app-header-content-->
+                </div><!--//container-fluid-->
+            </div><!--//app-header-inner-->
+            <div id="app-sidepanel" class="app-sidepanel sidepanel-hidden">
+                <div id="sidepanel-drop" class="sidepanel-drop"></div>
+                <div class="sidepanel-inner d-flex flex-column">
+                    <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+                    <div class="app-branding">
+                        <a class="app-logo" href="{% url 'app_collector:mailing' %}"><img class="logo-icon me-2" src="/static/assets/images/app-logo-1.jpg" alt="logo"><span class="logo-text">DYATEL</span></a>
+                    </div><!--//app-branding-->
+                    <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                        <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/mailing/">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                            <path fill-rule="evenodd" d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+                                            <circle cx="3.5" cy="5.5" r=".5"/>
+                                            <circle cx="3.5" cy="8" r=".5"/>
+                                            <circle cx="3.5" cy="10.5" r=".5"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Рассылка</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/statistic">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bar-chart-line" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Статистика</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="#"  onclick="readUsModal()">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-headset" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 1a5 5 0 0 0-5 5v4.5H2V6a6 6 0 1 1 12 0v4.5h-1V6a5 5 0 0 0-5-5z"></path>
+                                            <path d="M11 8a1 1 0 0 1 1-1h2v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V8zM5 8a1 1 0 0 0-1-1H2v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V8z"></path>
+                                            <path fill-rule="evenodd" d="M13.5 8.5a.5.5 0 0 1 .5.5v3a2.5 2.5 0 0 1-2.5 2.5H8a.5.5 0 0 1 0-1h3.5A1.5 1.5 0 0 0 13 12V9a.5.5 0 0 1 .5-.5z"></path>
+                                            <path d="M6.5 14a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Напишите нам</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                        </ul><!--//app-menu-->
+                    </nav><!--//app-nav-->
+                    <div class="app-sidepanel-footer">
+                        <nav class="app-nav app-nav-footer">
+                            <ul class="app-menu footer-menu list-unstyled">
+                            </ul><!--//footer-menu-->
+                        </nav>
+                    </div><!--//app-sidepanel-footer-->
+                </div><!--//sidepanel-inner-->
+            </div><!--//app-sidepanel-->
+        </header><!--//app-header-->
+    {% endblock %}
+
+
+<!--    ОСНОВНЫЕ ПОЛЯ ЛИЧНОГО КАБИНЕТА-->
+    <div class="app-wrapper">
+        {% block 'body' %}
+            <div class="app-content pt-3 p-md-3 p-lg-4">
+                <div class="container-xl">
+                    <h1 class="app-page-title">Личный кабинет</h1>
+                    <hr class="mb-4">
+                </div><!--//row-->
+            </div>
+        {% endblock %}
+
+        {% block 'footer' %}
+            <footer class="app-footer">
+            <div class="container text-center py-3">
+                <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+                <small class="copyright">With love <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> from <a class="app-link" href="https://cfunalog.ru/" target="_blank">CFU</a></small>
+            </div>
+        </footer><!--//app-footer-->
+        {% endblock %}
+
+    </div><!--//app-wrapper-->
+
+    <!-- Javascript -->
+    <script src="/static/assets/plugins/popper.min.js"></script>
+    <script src="/static/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Page Specific JS -->
+    <script src="/static/assets/js/app.js"></script>
+</body>
+</html>

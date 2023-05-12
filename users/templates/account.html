@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>🐦Дятел. Личный кабинет</title>
+    
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">    
+    <link rel="shortcut icon" href="favicon.ico"> 
+    
+    <!-- FontAwesome JS-->
+    <script defer src="/static/assets/plugins/fontawesome/js/all.min.js"></script>
+    
+    <!-- App CSS -->  
+    <link id="theme-style" rel="stylesheet" href="/static/assets/css/portal.css">
+
+</head> 
+
+<body class="app">
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(92703690, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/92703690" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+    <header class="app-header fixed-top">
+            <div class="app-header-inner">
+                <div class="container-fluid py-2">
+                    <div class="app-header-content">
+                        <div class="row justify-content-between align-items-center">
+
+                        <div class="col-auto">
+                            <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg>
+                            </a>
+                        </div><!--//col-->
+
+                        <!--ЭЛЕМЕНТЫ СПРАВА В ХЭДЕРЕ-->
+                        <div class="app-utilities col-auto">
+
+<!--                            БАЛАНС С ВЫПАДАЮЩИМ СПИСКОМ ДЕТАЛЕЙ ПО ФИНАНСАМ-->
+                            <div class="app-utility-item app-notifications-dropdown dropdown">
+                                <a class="dropdown-toggle no-toggle-arrow" id="notifications-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" title="Notifications">
+                                    <strong>{{ balance }} ₽</strong>
+                                    <div class="app-icon-holder">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-credit-card" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                          <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                        </svg>
+<!--                                        <span class="icon-badge">New</span>-->
+                                    </div><!--//icon-holder-->
+                                </a><!--//dropdown-toggle-->
+
+    <!--                        Иконка финансов-->
+                                <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
+
+                                    <div class="dropdown-menu-header p-3">
+                                        <h5 class="dropdown-menu-title mb-2">Финансы</h5>
+            <!--                        Строка с балансом-->
+                                        <form class="settings-form" method="post" action="{% url 'app_users:replenish_balance' %}">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                <span class="input-group-text">💰 Баланс: </span>
+                                                <span class="input-group-text">{{ balance }}</span>
+                                                <span class="input-group-text">₽</span>
+                                                <input class="form-control" type="number" step="0.01" placeholder="Сумма пополнения" name="replenishment_amount">
+                                                <button type="submit" class="btn app-btn-primary">💳 Пополнить</button>
+                                            </div>
+                                        </form>
+                                    </div><!--//dropdown-menu-title-->
+
+<!--                            Элементы списка в деталях баланса-->
+						        <div class="dropdown-menu-content">
+
+                                    {% for i_transaction in transactions_lst %}
+                                       <div class="item p-3">
+                                            <div class="row gx-2 justify-content-between align-items-center">
+                                                <div class="col-auto">
+    <!--										       <img class="profile-image" src="/static/assets/images/profiles/profile-1.png" alt="">-->
+                                                    {% if i_transaction.transaction_type == 'write-off' %} ➖ {% else %} ➕ {% endif %}
+                                                </div><!--//col-->
+                                                <div class="col-auto">
+                                                    💵 <strong>{{ i_transaction.amount }} ₽</strong>
+                                                </div><!--//col-->
+                                                <div class="col">
+                                                    <div class="desc">{{ i_transaction.description }}</div>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                            <a class="link-mask" href="{% url 'app_users:wallet' %}"></a>
+                                       </div><!--//item-->
+                                    {% endfor %}
+
+                                    <div class="dropdown-menu-footer p-2 text-center">
+                                        <a href="{% url 'app_users:wallet' %}">Посмотреть всё</a>
+                                    </div>
+                                </div>
+							</div><!--//dropdown-menu-->
+				        </div><!--//app-utility-item-->
+
+                            <div class="app-utility-item app-user-dropdown dropdown">
+<!--                                    <a class="btn app-btn-secondary" href="{% url 'app_users:logout' %}">Выйти</a>-->
+<!--    				            <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="/static/assets/images/user.png" alt="user profile"></a>-->
+
+<!--                            ПРИВЕТСТВИЕ ЮЗЕРА И ВЫПАДАЮЩИЙ СПИСОК-->
+                                <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                    <b>👋Привет, <u>{{ request.user.username }}</u></b>
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12 1H4a1 1 0 0 0-1 1v10.755S4 11 8 11s5 1.755 5 1.755V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>
+                                            <path fill-rule="evenodd" d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        </svg>
+                                    </span>
+                                </a>
+    				            <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+    								<li><a class="dropdown-item" href="{% url 'app_users:account' %}">Личный кабинет</a></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:wallet' %}">Кошелёк</a></li>
+    								<li><hr class="dropdown-divider"></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:logout' %}">Выйти</a></li>
+    							</ul>
+                            </div><!--//app-user-dropdown-->
+                        </div><!--//app-utilities-->
+
+                    </div><!--//row-->
+                    </div><!--//app-header-content-->
+                </div><!--//container-fluid-->
+            </div><!--//app-header-inner-->
+            <div id="app-sidepanel" class="app-sidepanel sidepanel-hidden">
+                <div id="sidepanel-drop" class="sidepanel-drop"></div>
+                <div class="sidepanel-inner d-flex flex-column">
+                    <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+                    <div class="app-branding">
+                        <a class="app-logo" href="{% url 'app_collector:mailing' %}"><img class="logo-icon me-2" src="/static/assets/images/app-logo-1.jpg" alt="logo"><span class="logo-text">DYATEL</span></a>
+                    </div><!--//app-branding-->
+                    <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                        <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/mailing/">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                            <path fill-rule="evenodd" d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+                                            <circle cx="3.5" cy="5.5" r=".5"/>
+                                            <circle cx="3.5" cy="8" r=".5"/>
+                                            <circle cx="3.5" cy="10.5" r=".5"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Рассылка</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/statistic">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bar-chart-line" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Статистика</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="#"  onclick="readUsModal()">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-headset" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 1a5 5 0 0 0-5 5v4.5H2V6a6 6 0 1 1 12 0v4.5h-1V6a5 5 0 0 0-5-5z"></path>
+                                            <path d="M11 8a1 1 0 0 1 1-1h2v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V8zM5 8a1 1 0 0 0-1-1H2v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V8z"></path>
+                                            <path fill-rule="evenodd" d="M13.5 8.5a.5.5 0 0 1 .5.5v3a2.5 2.5 0 0 1-2.5 2.5H8a.5.5 0 0 1 0-1h3.5A1.5 1.5 0 0 0 13 12V9a.5.5 0 0 1 .5-.5z"></path>
+                                            <path d="M6.5 14a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Напишите нам</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                        </ul><!--//app-menu-->
+                    </nav><!--//app-nav-->
+                    <div class="app-sidepanel-footer">
+                        <nav class="app-nav app-nav-footer">
+                            <ul class="app-menu footer-menu list-unstyled">
+                            </ul><!--//footer-menu-->
+                        </nav>
+                    </div><!--//app-sidepanel-footer-->
+                </div><!--//sidepanel-inner-->
+            </div><!--//app-sidepanel-->
+        </header><!--//app-header-->
+
+<!--    ОСНОВНЫЕ ПОЛЯ ЛИЧНОГО КАБИНЕТА-->
+    <div class="app-wrapper">
+	    <div class="app-content pt-3 p-md-3 p-lg-4">
+		    <div class="container-xl">
+			    <h1 class="app-page-title">Личный кабинет</h1>
+			    <hr class="mb-4">
+
+                <div class="row g-4 settings-section">
+
+<!--                ПЛАШКА ДЛЯ ВЫБОРА МЕССЕНДЖЕРА ДЛЯ РАССЫЛКИ-->
+<!--                Секция слева с текстом(заглушка)-->
+	                <div class="col-12 col-md-4">
+                        <h3 class="section-title" id="connected_services">Каналы коммуникации</h3>
+		                <div class="section-intro">
+                            <p>Информация о подключенных учётных записях WhatsApp, Telegram.</p>
+                            <p>Также не забудьте <b>выбрать мессенджер</b>, который будет использован по умолчанию.</p>
+                        </div>
+	                </div>
+<!--                Секция справа с инфой о мессенджере-->
+                    <div class="col-12 col-md-8">
+		                <div class="app-card app-card-settings shadow-sm p-4">
+						    <div class="app-card-body">
+							    <div class="mb-2"><strong>Выбор мессенджера для рассылки</strong></div>
+                                <form method="post" action="{% url 'app_users:choose_mailing_channel' %}">
+                                    {% csrf_token %}
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="tlg_for_mailing" name="channel_for_mailing" value="tlg" {% if selected_messenger == 'tlg' and tlg_session_file %} checked {% endif %} {% if not tlg_session_file %} disabled {% endif %}>
+                                        <label class="form-check-label" for="tlg_for_mailing">Telegram</label>
+                                    </div>
+                                    <div class="form-check mb-4">
+                                        <input class="form-check-input" type="radio" id="whtsp_for_mailing" name="channel_for_mailing" value="whtsp" {% if selected_messenger == 'whtsp' and whts_auth_status %} checked {% endif %} {% if not whts_auth_status %} disabled {% endif %}>
+                                        <label class="form-check-label" for="whtsp_for_mailing">WhatsApp</label>
+                                    </div>
+                                    <div class="row justify-content-between">
+                                        <div class="col-auto">
+                                            <button class="btn btn-primary pr-3" style="color: #fff;" type="submit" {% if not tlg_session_file or not whts_auth_status %} disabled {% endif %}>Сохранить выбор мессенджера</button>
+                                        </div>
+                                    </div>
+                                </form>
+						    </div><!--//app-card-body-->
+						</div><!--//app-card-->
+	                </div>
+
+<!--                ПЛАШКА ДЛЯ ИНФО О TELEGRAM-->
+<!--                Секция слева с текстом-->
+	                <div class="col-12 col-md-4">
+	                </div>
+<!--                Секция справа с инфой о мессенджере-->
+	                <div class="col-12 col-md-8">
+		                <div class="app-card app-card-settings shadow-sm p-4">
+						    <div class="app-card-body">
+							    <div class="mb-2"><strong>Название мессенджера:</strong> Telegram</div>
+							    <div class="mb-2"><strong>Статус подключения аккаунта:</strong>
+                                    {% if tlg_session_file %}
+                                        <span class="badge bg-info">Подключен</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Не подключен</span>
+                                    {% endif %}
+                                </div>
+							    <div class="mb-4"><strong>Об аккаунте:</strong> {% if tlg_acc_info %} {{ tlg_acc_info }} {% else %} ❌ {% endif %}</div>
+							    <div class="row justify-content-between">
+								    <div class="col-auto">
+								        <a class="btn app-btn-primary" href="{% url 'app_users:input_tlg_phone' %}">{% if tlg_session_file %} Изменить аккаунт {% else %} Подключить аккаунт {% endif %}</a>
+								    </div>
+								    <div class="col-auto">
+								        <a class="btn app-btn-secondary {% if not tlg_session_file %} disabled {% endif %}" href="{% url 'app_users:disable_tlg_acc' %}">Отключить аккаунт</a>
+								    </div>
+							    </div>
+						    </div><!--//app-card-body-->
+						</div><!--//app-card-->
+
+                    </div>
+<!--                ПЛАШКА ДЛЯ ИНФО О WhatsApp-->
+<!--                Секция слева с текстом(заглушка)-->
+	                <div class="col-12 col-md-4">
+	                </div>
+<!--                Секция справа с инфой о мессенджере-->
+                    <div class="col-12 col-md-8">
+		                <div class="app-card app-card-settings shadow-sm p-4">
+						    <div class="app-card-body">
+							    <div class="mb-2"><strong>Название мессенджера:</strong> WhatsApp</div>
+							    <div class="mb-2"><strong>Статус авторизации аккаунта:</strong>
+                                    {% if whts_auth_status == 'Авторизован' %}
+                                        <span class="badge bg-success">{{ whts_auth_status }}</span>
+                                    {% elif whts_auth_status == 'Не авторизован' %}
+                                        <span class="badge bg-warning">{{ whts_auth_status }}</span>
+                                    {% elif whts_auth_status == 'Бан' %}
+                                        <span class="badge bg-danger">{{ whts_auth_status }}</span>
+                                    {% elif whts_auth_status == 'Спящий режим' %}
+                                        <span class="badge bg-light">{{ whts_auth_status }}</span>
+                                    {% elif whts_auth_status == 'Сервисный режим' %}
+                                        <span class="badge bg-secondary">{{ whts_auth_status }}</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Не подключен</span>
+                                    {% endif %}
+                                </div>
+							    <div class="mb-4"><strong>Об аккаунте:</strong> {% if whts_acc_info %} {{ whts_acc_info }} {% else %} ❌ {% endif %}</div>
+							    <div class="row justify-content-between">
+								    <div class="col-auto">
+								        <a class="btn app-btn-primary" href="{% url 'app_users:connect_whatsapp' %}">{% if not whts_auth_status %} Подключить аккаунт {% else %} Изменить аккаунт {% endif %}</a>
+								    </div>
+								    <div class="col-auto">
+								        <a class="btn app-btn-secondary {% if not whts_auth_status %} disabled {% endif %}" href="{% url 'app_users:disable_whts_acc' %}">Отключить аккаунт</a>
+								    </div>
+							    </div>
+						    </div><!--//app-card-body-->
+						</div><!--//app-card-->
+	                </div>
+
+                </div><!--//row-->
+                <hr class="my-4">
+
+<!--                Секция "Профиль"-->
+                <div class="row g-4 settings-section">
+	                <div class="col-12 col-md-4">
+		                <h3 class="section-title">Профиль</h3>
+		                <div class="section-intro">Можно изменить название компании, текст типового сообщения и поменять пароль.</div>
+	                </div>
+	                <div class="col-12 col-md-8">
+		                <div class="app-card app-card-settings shadow-sm p-4">
+
+						    <div class="app-card-body">
+							    <form id="change_comp_name" class="settings-form" method="post" action="{% url 'app_users:account' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="comp_name_field" class="form-label">✒️ Название компании</label>
+                                        <input name="company_name" type="text" class="form-control" id="comp_name_field" value="{{ comp_name }}" required="required">
+                                    </div>
+                                    <button type="submit" class="btn app-btn-secondary">Изменить название компании</button>
+							    </form>
+                                <hr class="my-4">
+                                <form class="settings-form">
+                                    <div class="mb-3">
+                                        <label for="password_field" class="form-label">🔐 Пароль</label>
+                                        <input type="text" class="form-control" id="password_field" value="**************" readonly="readonly">
+                                    </div>
+                                    <a type="submit" class="btn app-btn-secondary" href="{% url 'app_users:change_pass' %}">Изменить пароль</a>
+                                </form>
+                                <hr class="my-4">
+                                <form id="change_dflt_text" class="settings-form" method="post" action="{% url 'app_users:account' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="dflt_text_field" class="form-label">✉️ Текст типового сообщения</label>
+<!--                                        <textarea class="form-control" id="dflt_text_field" style="height:150px;" required="required"></textarea>-->
+                                        {{ dflt_mlng_txt.dflt_txt }}
+                                    </div>
+								    <button type="submit" class="btn app-btn-secondary">Изменить текст сообщения</button>
+							    </form>
+
+<!--                            РАЗДЕЛ ДЛЯ ЗАГРУЗКИ ОФЕРТЫ-->
+                                {% if request.user.is_staff or request.user.is_superuser %}
+                                    <hr class="my-4">
+                                    <div class="mb-3">
+                                        <label class="form-label">📄 Договор оферты, размещенный на сайте:</label><br>
+                                        <a class="btn app-btn-secondary" href="{% url 'app_collector:agreement_file' %}">
+                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                            </svg>
+                                            Скачать договор оферты .html
+                                        </a>
+                                    </div>
+                                    <form class="settings-form" id="form-agreement" method="post" enctype="multipart/form-data" action="{% url 'app_collector:agreement_file' %}">
+                                        <div class="mb-3">
+                                            {% csrf_token %}
+                                            <label for="input_agreement_file" class="form-label">🆕 Загрузить новый договор оферты (.html):</label>
+                                            <span><input name="agreement_file" id="input_agreement_file" type="file" class="form-control"></span>
+                                        </div>
+                                        <button type="submit" class="btn app-btn-primary">Загрузить новый договор оферты (.html)</button>
+                                    </form>
+                                {% endif %}
+						    </div><!--//app-card-body-->
+
+						</div><!--//app-card-->
+	                </div>
+                </div><!--//row-->
+                <hr class="my-4">
+
+<!--                СЕКЦИЯ "СЕРВИСЫ"-->
+                <div class="row g-4 settings-section">
+                <div class="col-12 col-md-4">
+                    <h3 class="section-title">Сервисы</h3>
+                    <div class="section-intro">
+                        <p>Здесь всё, что поможет Вам интегрироваться с 1С.</p>
+                        <p>Вы можете скачать необходимый модуль и сгенерировать токен для него.</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-8">
+                    <div class="app-card app-card-settings shadow-sm p-4">
+
+                        <div class="app-card-body">
+                            <div class="mb-3"><strong>🧩Модуль для интеграции с 1С</strong></div>
+                            <div class="mb-2 intro">
+                                <p>Скачайте наш модуль интеграции с 1С и используйте наработанную базу клиентов в один клик.</p>
+                                <p>🔒За сохранность данных можете не переживать, доступ к информации есть только у Вас.</p>
+                            </div>
+                            <a class="btn app-btn-secondary" href="{% url 'app_collector:dwnld_1c_extension' file_name='Обработка_для_1С_БП_3.0.epf' %}">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"></path>
+                                    <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"></path>
+                                </svg>
+                                Скачать модуль 1С
+                            </a>
+                            <hr class="my-4">
+                            <div class="mb-3">
+                                <form class="settings-form" method="post" action="{% url 'app_users:account' %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <label for="api_token_for_1c" class="form-label">🔑API Токен для интеграции с 1С</label>
+                                        <input name="generate_token" id="api_token_for_1c" type="text" class="form-control" value="{{ api_token_for_1c }}" readonly>
+                                    </div>
+								    <button type="submit" class="btn app-btn-secondary">⚙️Сгенерировать токен</button>
+							    </form>
+                            </div>
+                        </div><!--//app-card-body-->
+
+                    </div><!--//app-card-->
+                </div>
+            </div><!--//row-->
+	    </div>
+        <footer class="app-footer">
+            <div class="container text-center py-3">
+                <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+                <small class="copyright">With love <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> from <a class="app-link" href="https://cfunalog.ru/" target="_blank">CFU</a></small>
+            </div>
+        </footer><!--//app-footer-->
+	    
+    </div><!--//app-wrapper-->
+ 
+    <!-- Javascript -->          
+    <script src="/static/assets/plugins/popper.min.js"></script>
+    <script src="/static/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    
+    <!-- Page Specific JS -->
+    <script src="/static/assets/js/app.js"></script>
+
+</body>
+</html> 
+

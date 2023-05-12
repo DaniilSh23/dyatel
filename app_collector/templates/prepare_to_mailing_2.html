@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <title>🐦Дятел. Рассылка</title>
+
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+        <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+        <link rel="shortcut icon" href="favicon.ico">
+
+        <!-- FontAwesome JS-->
+        <script defer src="/static/assets/plugins/fontawesome/js/all.min.js"></script>
+
+        <!-- App CSS -->
+        <link id="theme-style" rel="stylesheet" href="/static/assets/css/portal.css">
+        <link id="theme-style" rel="stylesheet" href="/static/assets/css/modify.css">
+
+        <!--	Сторонняя библиотека с анимациями, кот. называется animate.css-->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+            />
+    </head>
+
+    <body class="app">
+
+        <!-- Yandex.Metrika counter -->
+        <script type="text/javascript" >
+           (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+           m[i].l=1*new Date();
+           for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+           k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+           (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+           ym(92703690, "init", {
+                clickmap:true,
+                trackLinks:true,
+                accurateTrackBounce:true,
+                webvisor:true
+           });
+        </script>
+        <noscript><div><img src="https://mc.yandex.ru/watch/92703690" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+        <!-- /Yandex.Metrika counter -->
+
+    <header class="app-header fixed-top">
+            <div class="app-header-inner">
+                <div class="container-fluid py-2">
+                    <div class="app-header-content">
+                        <div class="row justify-content-between align-items-center">
+
+                        <div class="col-auto">
+                            <a id="sidepanel-toggler" class="sidepanel-toggler d-inline-block d-xl-none" href="#">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img"><title>Menu</title><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg>
+                            </a>
+                        </div><!--//col-->
+
+                        <!--ЭЛЕМЕНТЫ СПРАВА В ХЭДЕРЕ-->
+                        <div class="app-utilities col-auto">
+
+<!--                            БАЛАНС С ВЫПАДАЮЩИМ СПИСКОМ ДЕТАЛЕЙ ПО ФИНАНСАМ-->
+                            <div class="app-utility-item app-notifications-dropdown dropdown">
+                                <a class="dropdown-toggle no-toggle-arrow" id="notifications-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false" title="Notifications">
+                                    <strong>{{ balance }} ₽</strong>
+                                    <div class="app-icon-holder">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-credit-card" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                                          <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                                        </svg>
+<!--                                        <span class="icon-badge">New</span>-->
+                                    </div><!--//icon-holder-->
+                                </a><!--//dropdown-toggle-->
+
+    <!--                        Иконка финансов-->
+                                <div class="dropdown-menu p-0" aria-labelledby="notifications-dropdown-toggle">
+
+                                    <div class="dropdown-menu-header p-3">
+                                        <h5 class="dropdown-menu-title mb-2">Финансы</h5>
+            <!--                        Строка с балансом-->
+                                        <form class="settings-form" method="post" action="{% url 'app_users:replenish_balance' %}">
+                                            {% csrf_token %}
+                                            <div class="input-group">
+                                                <span class="input-group-text">💰 Баланс: </span>
+                                                <span class="input-group-text">{{ balance }}</span>
+                                                <span class="input-group-text">₽</span>
+                                                <button type="submit" class="btn app-btn-primary">💳 Пополнить</button>
+                                            </div>
+                                        </form>
+                                    </div><!--//dropdown-menu-title-->
+
+<!--                            Элементы списка в деталях баланса-->
+						        <div class="dropdown-menu-content">
+
+                                    {% for i_transaction in transactions_lst %}
+                                       <div class="item p-3">
+                                            <div class="row gx-2 justify-content-between align-items-center">
+                                                <div class="col-auto">
+    <!--										       <img class="profile-image" src="/static/assets/images/profiles/profile-1.png" alt="">-->
+                                                    {% if i_transaction.transaction_type == 'write-off' %} ➖ {% else %} ➕ {% endif %}
+                                                </div><!--//col-->
+                                                <div class="col-auto">
+                                                    💵 <strong>{{ i_transaction.amount }} ₽</strong>
+                                                </div><!--//col-->
+                                                <div class="col">
+                                                    <div class="desc">{{ i_transaction.description }}</div>
+                                                </div><!--//col-->
+                                            </div><!--//row-->
+                                            <a class="link-mask" href="{% url 'app_users:wallet' %}"></a>
+                                       </div><!--//item-->
+                                    {% endfor %}
+
+                                    <div class="dropdown-menu-footer p-2 text-center">
+                                        <a href="{% url 'app_users:wallet' %}">Посмотреть всё</a>
+                                    </div>
+                                </div>
+							</div><!--//dropdown-menu-->
+				        </div><!--//app-utility-item-->
+
+                            <div class="app-utility-item app-user-dropdown dropdown">
+<!--                                    <a class="btn app-btn-secondary" href="{% url 'app_users:logout' %}">Выйти</a>-->
+<!--    				            <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><img src="/static/assets/images/user.png" alt="user profile"></a>-->
+
+<!--                            ПРИВЕТСТВИЕ ЮЗЕРА И ВЫПАДАЮЩИЙ СПИСОК-->
+                                <a class="dropdown-toggle" id="user-dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                    <b>👋Привет, <u>{{ request.user.username }}</u></b>
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-file-person" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12 1H4a1 1 0 0 0-1 1v10.755S4 11 8 11s5 1.755 5 1.755V2a1 1 0 0 0-1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4z"/>
+                                            <path fill-rule="evenodd" d="M8 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                                        </svg>
+                                    </span>
+                                </a>
+    				            <ul class="dropdown-menu" aria-labelledby="user-dropdown-toggle">
+    								<li><a class="dropdown-item" href="{% url 'app_users:account' %}">Личный кабинет</a></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:wallet' %}">Кошелёк</a></li>
+    								<li><hr class="dropdown-divider"></li>
+    								<li><a class="dropdown-item" href="{% url 'app_users:logout' %}">Выйти</a></li>
+    							</ul>
+                            </div><!--//app-user-dropdown-->
+                        </div><!--//app-utilities-->
+
+                    </div><!--//row-->
+                    </div><!--//app-header-content-->
+                </div><!--//container-fluid-->
+            </div><!--//app-header-inner-->
+            <div id="app-sidepanel" class="app-sidepanel sidepanel-hidden">
+                <div id="sidepanel-drop" class="sidepanel-drop"></div>
+                <div class="sidepanel-inner d-flex flex-column">
+                    <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+                    <div class="app-branding">
+                        <a class="app-logo" href="{% url 'app_collector:mailing' %}"><img class="logo-icon me-2" src="/static/assets/images/app-logo-1.jpg" alt="logo"><span class="logo-text">DYATEL</span></a>
+                    </div><!--//app-branding-->
+                    <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                        <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/mailing/">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                            <path fill-rule="evenodd" d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z"/>
+                                            <circle cx="3.5" cy="5.5" r=".5"/>
+                                            <circle cx="3.5" cy="8" r=".5"/>
+                                            <circle cx="3.5" cy="10.5" r=".5"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Рассылка</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="/statistic">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bar-chart-line" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z"/>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Статистика</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                            <li class="nav-item">
+                                <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                                <a class="nav-link" href="#"  onclick="readUsModal()">
+                                    <span class="nav-icon">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-headset" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8 1a5 5 0 0 0-5 5v4.5H2V6a6 6 0 1 1 12 0v4.5h-1V6a5 5 0 0 0-5-5z"></path>
+                                            <path d="M11 8a1 1 0 0 1 1-1h2v4a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V8zM5 8a1 1 0 0 0-1-1H2v4a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V8z"></path>
+                                            <path fill-rule="evenodd" d="M13.5 8.5a.5.5 0 0 1 .5.5v3a2.5 2.5 0 0 1-2.5 2.5H8a.5.5 0 0 1 0-1h3.5A1.5 1.5 0 0 0 13 12V9a.5.5 0 0 1 .5-.5z"></path>
+                                            <path d="M6.5 14a1 1 0 0 1 1-1h1a1 1 0 1 1 0 2h-1a1 1 0 0 1-1-1z"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="nav-link-text">Напишите нам</span>
+                                </a><!--//nav-link-->
+                            </li><!--//nav-item-->
+                        </ul><!--//app-menu-->
+                    </nav><!--//app-nav-->
+                    <div class="app-sidepanel-footer">
+                        <nav class="app-nav app-nav-footer">
+                            <ul class="app-menu footer-menu list-unstyled">
+                            </ul><!--//footer-menu-->
+                        </nav>
+                    </div><!--//app-sidepanel-footer-->
+                </div><!--//sidepanel-inner-->
+            </div><!--//app-sidepanel-->
+        </header><!--//app-header-->
+
+        <!-- Напишите нам. Модальное окно-->
+        <!-- Modal -->
+        <div class="modal fade" id="readUsModal" tabindex="-1" aria-labelledby="readUs-downloadLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg1">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="readUs-downloadLabel">Форма обратной связи</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="" method="post" action="{% url 'app_collector:feedback' %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <!-- modal-body -->
+                            <div class="row g-1 settings-section  p-3">
+                                <div class="col-12">
+                                    <h5 class="text-center text-primary">Напишите нам</h5>
+                                    <div class="app-card app-card-settings">
+                                        <div class="app-card-body">
+                                            <div class="form-floating">
+                                                {{ feedback_form.feedback_text }}
+<!--                                                <textarea style="height: 200px" class="form-control" id="text-read-us"></textarea>-->
+                                                <!-- <label for="text-read-us">Текст...</label>-->
+                                            </div>
+                                        </div><!--//app-card-body-->
+                                    </div><!--//app-card-->
+                                </div>
+                            </div><!--//row-->
+                            <!-- //modal-body -->
+
+                        </div>      
+                        <div class="modal-footer">
+                            <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn app-btn-primary" >Отправить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <script>
+            // Показать форму Напишите нам
+            function readUsModal() {
+                var formReadUsModal = new bootstrap.Modal(document.getElementById('readUsModal'));
+                formReadUsModal.show(); 
+            }    
+        </script>
+        
+        <div class="app-wrapper">
+
+            <div class="app-content pt-3 p-md-3 p-lg-4">
+                <div class="container-xl">
+
+                    <div class="row g-3 mb-4 align-items-center justify-content-between">
+                        <div class="col-auto">
+                            <h1 class="app-page-title mb-0">Выполнить рассылку</h1>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4 align-items-center justify-content-between">
+                        <div class="col-auto">
+                            <div class="page-utilities">
+                                <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                    <div class="col-auto">
+                                        <!--  Кнопка, которая откроет поп-ап окно-->
+                                        <button class="btn app-btn-secondary" onclick="toggleTable()">Настройка рассылки</button>
+                                    </div>
+                                </div><!--//row-->
+                            </div><!--//table-utilities-->
+                        </div><!--//col-auto-->
+                    </div><!--//row-->
+
+
+                    <!--				Ниже всё, что в поп-ап окне "Настройки рассылки"-->
+                    <div style="display: block;"  id="table-container">
+                        <hr class="mb-4">
+
+                        <!--			Скачать образец excel файла и загрузить клиентом из файла-->
+                        <div class="row g-4 settings-section">
+                            <div class="col-12 col-md-4">
+                                <h3 class="section-title">Загрузить список клиентов из файла</h3>
+                                <div class="section-intro">Вы можете <a href="{% url 'app_collector:dwnld_clients_lst_example' file_name='clients_lst_example.xlsx' %}">скачать шаблон файла</a> cо списком клиентов, отредактировать его и добавить несколько клиентов из списка</div>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div class="app-card app-card-settings shadow-sm p-4">
+                                    <div class="app-card-body">
+                                        <div class="mb-1 form-group row g-3">
+                                            {% if exist_tlg_session_file or whts_auth_status %}
+                                                <form class="settings-form" id="form-xlsx" method="post" enctype="multipart/form-data" action="{% url 'app_collector:upload_clients_lst_file' %}">
+                                                    <input id="form-xlsx-todo" type="hidden" name="todo" value="">
+                                                    {% csrf_token %}
+                                                    <div class="mb-3 form-group row g-3">
+                                                        <div class="col-sm-6">
+                                                            <label class="form-label">Добавить файл с клиентами:</label>
+<!--                                                            <input type="file" class="form-control">-->
+                                                            {{ file_form.file }}
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <label class="form-label">Шаблон файла с клиентами:</label>
+                                                            <a class="btn app-btn-secondary" href="{% url 'app_collector:dwnld_clients_lst_example' file_name='clients_lst_example.xlsx' %}">
+                                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-download me-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                                                <path fill-rule="evenodd" d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                                                </svg>
+                                                            Скачать шаблон .xlsx
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <!--<button type="submit" class="btn app-btn-primary">Загрузить клиентов из файла</button>-->
+                                                    <button type="submit" class="btn app-btn-primary" onclick="sendFormFxlsx(); return false;">Загрузить клиентов из файла</button>
+                                                </form>
+                                            {% else %}
+                                            <p><b>🤷‍♂️ Сперва к учётной записи нужно подключить Telegram.<br><a href="{% url 'app_users:input_tlg_phone'%}">Давайте сделаем это!</a></b></p>
+                                            {% endif %}
+                                        </div>
+                                    </div><!--//app-card-body-->
+                                </div><!--//app-card-->
+                            </div>
+                        </div><!--//row-->
+                        <script> 
+                            function sendFormFxlsx() { // Отправка формы с xls
+                                var rows = document.querySelectorAll("#orders-table-tab-content tbody tr");
+                                if(rows.length == 0) {  // Если таблица пустая то отправим форму
+                                    document.getElementById("form-xlsx").submit();
+                                    
+                                } else {  // Иначе покажем модальное с уточнением
+                                    var questionDownloadModal = new bootstrap.Modal(document.getElementById('question-download'));
+                                    questionDownloadModal.show(); 
+                                } 
+                            }
+                        </script>
+                        
+                         <!-- Уточнение. Удалить данные из таблицы или обновить. Модальное окно-->
+                        <!-- Modal -->
+                        <div class="modal fade" id="question-download" tabindex="-1" aria-labelledby="question-downloadLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="question-downloadLabel">Загрузка данных</h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- modal-body -->
+                                        <div class="row g-4 settings-section pt-3 pb-3"> 
+                                            <div class="col-6">
+<!--                                                <div class="section-intro">Добавить данныек существующующему списку;</div>
+                                                <div class="section-intro">"Заменить" - существующие данные заменяться новыми;</div>-->
+<!--                                                <div class="app-card app-card-settings shadow-sm p-4">
+                                                    <div class="app-card-body">
+                                                        <div class="section-intro">Добавить данные к существующующему списку;</div>
+                                                    </div>//app-card-body   
+                                                </div>//app-card-->
+                                                <button type="button" class="btn app-btn-primary" onclick="questionModal(1)">Добавить к существующим данным</button>
+                                            </div>
+                                            <div class="col-6">
+<!--                                                <div class="app-card app-card-settings shadow-sm p-4">
+                                                    <div class="app-card-body">
+                                                        <div class="section-intro">Заменить существующие данные новыми;</div>
+                                                        
+                                                    </div>//app-card-body   
+                                                    
+                                                </div>//app-card-->
+                                                <button type="button" class="btn app-btn-primary" onclick="questionModal(0)">Заменить существующие данные новыми</button>
+                                            </div>
+                                        </div><!--//row-->
+                                        <!-- //modal-body -->
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Отмена</button>
+<!--                                        <button type="button" class="btn app-btn-primary" onclick="questionModal(1)">Добавить</button>
+                                        <button type="button" class="btn app-btn-primary" onclick="questionModal(0)">Заменить</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <script> 
+                            function questionModal(insert) {
+                                var form = document.getElementById('form-xlsx');
+                                var formXlsxTodo = document.getElementById('form-xlsx-todo');
+//                                var questionDownloadModal = new bootstrap.Modal(document.getElementById('question-download'));
+//                                    questionDownloadModal.hide();   
+                                if(insert) {
+                                    formXlsxTodo.value = "add"; 
+                                    //form.innerHTML += '<input type="hidden" name="todo" value="insert">';
+                                    form.submit();
+                                } else {
+                                    formXlsxTodo.value = "clear";
+                                    //form.innerHTML += '<input type="hidden" name="todo" value="update">';
+                                    form.submit();
+                                }
+                            }
+                        </script>
+                        
+                        <!--				Форма для добавления одного клиента-->
+                        <hr class="mb-4 d-none">
+                        <div class="row g-4 settings-section d-none">
+                            <div class="col-12 col-md-4">
+                                <h3 class="section-title">Добавить одного клиента</h3>
+                                <div class="section-intro">Вы можете добавить одного клиента к общему списку рассылки, заполнив поля формы справа.</div>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div class="app-card app-card-settings shadow-sm p-4">
+                                    <div class="app-card-body">
+                                        {% if exist_tlg_session_file %}
+                                            <form class="settings-form" id="add_one_client_in_table" method="post" action="#">
+                                                <div class="mb-3 form-group row g-3">
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" id="pop-upFeld1" placeholder="Ваш клиент" required>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="text" class="form-control" id="pop-upFeld2" placeholder="Телефон или @username" required>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 form-group row g-3">
+                                                    <div class="col-sm-6">
+                                                        <input type="date" class="form-control" id="pop-upFeld5" value="1970-01-01">
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <input type="number" class="form-control" id="pop-upFeld4" placeholder="Сумма">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3 form-group">
+                                                    <textarea class="form-control" id="pop-upFeld3" placeholder="Текст сообщения" maxlength="500" style="height:80px;" rows="3"></textarea>
+                                                </div>
+                                                <button type="submit" class="btn app-btn-primary" onclick="addRow()">Добавить клиента</button>
+                                            </form>
+                                        {% else %}
+                                            <p><b>Первоначально к учётной записи нужно подключить Telegram<br><a href="{% url 'app_users:input_tlg_phone'%}">Давайте сделаем это!</a></b></p>
+                                        {% endif %}
+                                    </div><!--//app-card-body-->
+                                </div><!--//app-card-->
+                            </div>
+                        </div><!--//row-->
+
+                        <!--				Форма для добавления типового сообщения-->
+                        <hr class="mb-4">
+                        <div class="row g-4 settings-section">
+                            <div class="col-12 col-md-4">
+                                <h3 class="section-title">Изменить текст типового сообщения</h3>
+                                <div class="section-intro">
+                                    <b>В текст можно подставить:</b><br>
+                                    <code>{date}</code> - Дата платежа<br>
+                                    <code>{amount}</code> - Сумма платежа<br>
+                                    <code>{client}</code> - Клиент (Ф.И.О или компания)<br>
+                                    <code>{my_comp}</code> - Название вашей компании<br>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-8">
+                                <div class="app-card app-card-settings shadow-sm p-4">
+                                    <div class="app-card-body">
+                                        {% if exist_tlg_session_file or whts_auth_status %}
+                                            <form class="settings-form" method="post" action="{% url 'app_collector:change_dflt_txt' %}">
+                                                {% csrf_token %}
+                                                <div class="mb-3 col-12 col-md-12">
+                                                    <textarea class="form-control" name="dflt_txt" id="pop-upFeld6" placeholder="Текст типового сообщения" maxlength="500" style="height:141px;" rows="3">{{ dflt_txt }}</textarea>
+    <!--                                                {{ change_dflt_txt_form.dflt_txt }}-->
+                                                </div>
+                                                <button type="submit" class="btn app-btn-primary">Изменить типовое сообщение</button>
+                                            </form>
+                                        {% else %}
+                                            <b>🤷‍♂️ Сперва к учётной записи нужно подключить Telegram.<p><a href="{% url 'app_users:input_tlg_phone'%}">Давайте сделаем это!</a></p></b>
+                                        {% endif %}
+                                    </div><!--//app-card-body-->
+                                </div><!--//app-card-->
+                            </div>
+                        </div><!--//row-->
+                        <hr class="mb-4">
+                    </div>
+
+
+
+                    <!-- Добавить клиента. Модальное окно-->
+                    <!-- Modal -->
+                    <div class="modal fade" id="client-add" tabindex="-1" aria-labelledby="client-addLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form class="settings-form" enctype="multipart/form-data" id="add_one_client_in_table_modal" method="post" action="{% url 'app_collector:upd_or_crt_client' %}">
+                                    {% csrf_token %}
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="client-addLabel">Добавить одного клиента</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- modal-body -->
+                                        <div class="row g-4 settings-section">
+                                            <div class="col-12">
+                                                <div class="section-intro">Вы можете добавить одного клиента к общему списку рассылки, заполнив поля формы.</div>
+                                                <div class="app-card app-card-settings shadow-sm p-4">
+                                                    <div class="app-card-body">
+                                                            <div class="mb-3 form-group row g-3">
+                                                                <input type="hidden" id="clientId" name="client_id">
+                                                                <div class="col-sm-6">
+                                                                    <label for="popupClient">Имя клиента:</label>
+                                                                    <input type="text" name="client_name" class="form-control" id="popupClient" placeholder="ООО Язь / И.И.Иванов" maxlength="100"  required="required">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label for="popupPhone">Контакт клиента:</label>
+                                                                    <input type="text" name="telephone_or_username" class="form-control" id="popupPhone" placeholder="Телефон или @username" maxlength="100" required="required">
+                                                                </div>
+                                                            </div>
+                                                            <div class="mb-3 form-group row g-3">
+                                                                <div class="col-sm-6">
+                                                                    <label for="popupDate">Дата и время платежа:</label>
+                                                                    <input type="datetime-local" name="pmnt_date" class="form-control" id="popupDate" required="required">
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label for="popupDate">Сумма платежа:</label>
+                                                                    <input type="number" step="0.01" min="0.00" value="0.00" name="amount_of_pmnt" class="form-control" id="popupSum" placeholder="Сумма" maxlength="32" required="required">
+                                                                </div>
+                                                            </div>
+                                                            <hr>
+                                                            <div class="mb-3 form-group">
+                                                                {{ multi_file_form.as_p }}
+                                                            </div>
+                                                            <hr>
+                                                            <div class="mb-3 form-group">
+                                                                <label for="popupDate">Текст рассылки:</label>
+                                                                {{ change_dflt_txt_form.dflt_txt }}
+    <!--                                                            <textarea class="form-control" id="popupMessage" placeholder="Текст сообщения" maxlength="500" style="height:80px;" rows="3"></textarea>-->
+                                                            </div>
+
+                                                    </div><!--//app-card-body-->
+                                                </div><!--//app-card-->
+                                            </div>
+                                        </div><!--//row-->
+                                        <!-- //modal-body -->
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Отмена</button>
+<!--                                        <button type="button" class="btn app-btn-primary" onclick="addRow()">Сохранить</button>-->
+                                        <button type="submit" class="btn app-btn-primary">Сохранить</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--Добавления строки в таблицу. Данные берутся из формы с id="add_one_client_in_table_modal"-->
+                    <script>
+                        // Function to add a new row to the table
+                        function addRow() {
+
+                            let tabRow = document.getElementById("table-mailings").rows.length;//количество строк
+
+
+                            // Проверим есть ли значение в скрытом поле, признак на изменение
+                            let clientId = document.getElementById("clientId").value;
+                            
+                            let popupClient = document.getElementById("popupClient").value;
+                            let popupPhone = document.getElementById("popupPhone").value;
+                            let popupDate = document.getElementById("popupDate").value;
+                            let popupSum = document.getElementById("popupSum").value;
+                            let popupMessage = document.getElementById("popupMessage").value;
+
+                            if(clientId) {
+                                //alert(clientId);
+                                var rows = document.querySelectorAll("#orders-table-tab-content tbody tr");
+                                console.log(rows);
+                                for (var i = 0; i < rows.length; i++) { // перебираем все строки
+                                    var cols = rows[i].querySelectorAll('td'); // получаем столбцы
+                                    
+                                    console.log('Получаем столбцы'); // выводим текст из столбца
+                                    console.log( cols[0].getAttribute('client-id') ); // выводим текст из столбца
+                                    // cols[0].innerHTML = "Заменили"; 
+                                    
+                                    if(cols[0].getAttribute('client-id') == clientId) { 
+                                        cols[0].textContent = popupClient;
+                                        cols[1].textContent = popupPhone;
+                                        cols[2].textContent = popupDate;
+                                        cols[3].textContent = popupSum;
+                                        cols[4].textContent = popupMessage;
+                                    }
+                                } 
+                                
+                            } 
+                            else 
+                            {
+                                // Create a new row in the table
+                                let newRow = `
+                          <tr>
+                                <td client-id="${tabRow}" class="cell" style="width: 23%;">${popupClient}</td>
+                                <td class="cell" style="width: 15%;">${popupPhone}</td>
+                                <td class="cell" style="width: 11%;">${popupDate}</td>
+                                <td class="cell" style="width: 11%;">${popupSum}</td>
+                                <td class="cell text-break" style="width: 34%;"><span class="truncate">${popupMessage}</span></td>
+                                <td class="cell col-sm-1" style="width: 4%;">
+                                    <a class="create-btn btn app-btn-secondary" onclick="clientAddShowModal(${tabRow})" href="#">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
+                                        </svg>
+                                    </a>
+                                </td>
+                                <td class="cell col-sm-1" style="width: 4%;">
+                                    <a class="delete-btn btn app-btn-secondary" onclick="tableClientDelete(${tabRow})" href="#">
+                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                        </svg>
+                                    </a>
+                                </td>
+                          </tr>
+                        `;
+
+                                // Добавить в конеч таблицы строку
+                                document.querySelector("table tbody").insertAdjacentHTML("beforeend", newRow);
+                            }
+                            // Скрыть модельное окно
+                            var modal = document.getElementById('client-add');
+                            var modalInstance = bootstrap.Modal.getInstance(modal);
+                            modalInstance.hide();
+                            
+                            // Очистить форму
+                            document.getElementById('add_one_client_in_table_modal').reset();
+                        }
+
+                        // Function to toggle the visibility of the pop-up form
+                        function toggleTable() {
+
+                            let tableContainer = document.getElementById("table-container");
+                            if (tableContainer.style.display === "block") {
+                                tableContainer.style.display = "none";
+                            } else {
+                                tableContainer.style.display = "block";
+                            }
+                        }
+                        
+                        // Удалить строку таблицы
+                        function tableClientDelete(clientId) { 
+                            if(clientId) {
+                                
+                                                        
+                                var rows = document.querySelectorAll("#orders-table-tab-content tbody tr");
+                                
+                                for (var i = 0; i < rows.length; i++) { // перебираем все строки
+                                    var cols = rows[i].querySelectorAll('td'); // получаем столбцы
+                                    
+                                    console.log('Получаем столбцы'); // выводим текст из столбца
+                                    console.log( cols[0].getAttribute('client-id') ); // выводим текст из столбца
+                                       
+                                    // Спросим действительно хотим удалить 
+                                    if(cols[0].getAttribute('client-id') == clientId) {
+                                        if(!confirm('Вы действительно хотите удалить запись: ' + cols[0].textContent)) {
+                                            return false;
+                                        }
+                                        rows[i].remove();
+                                    }
+                                } 
+                            }
+                        }
+                        
+                        // Показать форму
+                        function clientAddShowModal(clientId) {
+                            var clientAddModal = new bootstrap.Modal(document.getElementById('client-add'));
+                            clientAddModal.show();
+                            
+                            // Если на редактирование то заполним модальное окно 
+                            if(clientId) {
+                               document.getElementById("clientId").value = clientId; // Выставим скрытое поле идетнификатором клиента.
+                               
+                                var rows = document.querySelectorAll("#orders-table-tab-content tbody tr");
+                                console.log(rows);
+                                for (var i = 0; i < rows.length; i++) { // перебираем все строки
+                                    var cols = rows[i].querySelectorAll('td'); // получаем столбцы
+                                    
+                                    console.log('Получаем столбцы'); // выводим текст из столбца
+                                    console.log( cols[0].getAttribute('client-id') ); // выводим текст из столбца
+                                    // cols[0].innerHTML = "Заменили"; 
+                                    
+                                    if(cols[0].getAttribute('client-id') == clientId) {
+                                        document.getElementById("popupClient").value = cols[0].textContent;
+                                        document.getElementById("popupPhone").value = cols[1].textContent;
+                                        document.getElementById("popupDate").value = cols[2].textContent;
+                                        document.getElementById("popupSum").value = cols[3].textContent;
+                                        document.getElementById("popupMessage").value = cols[4].textContent;
+                                    }
+                                 
+//                                    for (var j = 0; j < cols.length; j++) { // перебираем все столбцы
+//                                       console.log(cols[j].textContent); // выводим текст из столбца
+//                                       
+//                                    }
+
+                                } 
+                                
+
+                            } else {
+                                // Очистить признак на редактирование.
+                                document.getElementById("clientId").value = ''; // Выставим скрытое поле идетнификатором клиента.
+                                // Очистить форму
+                                document.getElementById('add_one_client_in_table_modal').reset();
+                            }
+                             
+                        }
+                        
+                    </script>
+                    <!--				ИТОГОВАЯ ТАБЛИЦА-->
+                    <div class="tab-content" id="orders-table-tab-content">
+                        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive p-3"> 	<!-- p-3 меняет отступы у кнопки-->
+                                        <a id="table_with_clients_for_mailing"></a>
+                                        {% if exist_tlg_session_file or whts_auth_status %}
+                                            <form class="settings-form" method="post" action="{% url 'app_collector:start_mlng' %}">
+                                                {% csrf_token %}
+                                                <div class="mb-4 col-12 col-md-8">
+                                                    <button type="submit" style="color: #fff;" class="btn btn-primary pr-3" {% if clients_lst|length < 1 %} disabled {% endif %}>🐦Старт рассылки</button>
+                                                    <button type="button" class="btn app-btn-secondary" onclick="clientAddShowModal()">
+                                                        Добавить клиента
+                                                    </button>
+                                                </div>
+                                            </form>
+                                            <table id="table-mailings" class="table app-table-hover mb-3 text-left">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="cell">Клиент</th>
+                                                        <th class="cell">Телефон/@user</th>
+                                                        <th class="cell">Дата платежа</th>
+                                                        <th class="cell">Сумма платежа</th>
+                                                        <th class="cell">Текст рассылки</th>
+                                                        <th class="cell">Файлы</th>
+                                                        <th class="cell"></th>
+                                                        <th class="cell"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i_client in clients_lst %}
+    <!--                                                    МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ СТРОКИ (начало)-->
+                                                    <div class="modal fade" id="client-add-{{ i_client.client_id }}" tabindex="-1" aria-labelledby="client-addLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <form class="settings-form" enctype="multipart/form-data" id="add_one_client_in_table_modal_{{ i_client.client_id }}" method="post" action="{% url 'app_collector:upd_or_crt_client' %}">
+                                                                {% csrf_token %}
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="client-addLabel-{{ i_client.client_id }}">Изменить клиента</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <!-- modal-body -->
+                                                                        <div class="row g-4 settings-section">
+                                                                            <div class="col-12">
+                                                                                <div class="section-intro">Отредактируйте поля и нажмите "Сохранить"</div>
+                                                                                <div class="app-card app-card-settings shadow-sm p-4">
+                                                                                    <div class="app-card-body">
+                                                                                            <div class="mb-3 form-group row g-3">
+                                                                                                <input type="hidden" id="{{ i_client.client_id }}" name="client_id" value="{{ i_client.client_id }}">
+                                                                                                <div class="col-sm-6">
+                                                                                                    <label for="client_name_{{ i_client.client_id }}">Имя клиента:</label>
+                                                                                                    <input type="text" id="client_name_{{ i_client.client_id }}" class="form-control" placeholder="Имя клиента" name="client_name" value="{{ i_client.client_name }}" required="required">
+                                                                                                </div>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <label for="client_contact_{{ i_client.client_id }}">Контакт клиента:</label>
+                                                                                                    <input type="text" class="form-control" id="client_contact_{{ i_client.client_id }}" placeholder="Телефон или @username" name="telephone_or_username" value="{{ i_client.telephone_or_username }}" required="required">
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="mb-3 form-group row g-3">
+                                                                                                <div class="col-sm-6">
+                                                                                                    <label for="client_pmnt_date_{{ i_client.client_id }}">Дата и время платежа:</label>
+                                                                                                    <input type="datetime-local" id="client_pmnt_date_{{ i_client.client_id }}" class="form-control" name="pmnt_date" value="{{ i_client.form_date_value }}" required="required">
+                                                                                                </div>
+                                                                                                <div class="col-sm-6">
+                                                                                                    <label for="client_amount_{{ i_client.client_id }}">Сумма платежа:</label>
+                                                                                                    <input type="text" class="form-control" id="client_amount_{{ i_client.client_id }}" name="amount_of_pmnt" value="{{ i_client.amount_of_pmnt }}" placeholder="Сумма" required="required">
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                            <div class="mb-3 form-group">
+                                                                                                <hr>
+                                                                                                <p>
+                                                                                                    {{ multi_file_form.as_p }}
+<!--                                                                                                    <label for="new_files">Добавить новые файлы:</label>-->
+<!--                                                                                                    <input class="form-control" type="file" name="new_files" id="new_files" multiple>-->
+                                                                                                </p>
+                                                                                                {% for i_file in i_client.files_lst %}
+                                                                                                    <p>
+                                                                                                        <input type="checkbox" name="delete_files" value="{{ i_file.id }}"> 🗑 Удалить:
+                                                                                                        <a href="{{ i_file.file.url }}" target="_blank">{{ i_file.file_name }}</a>
+                                                                                                    </p>
+                                                                                                {% empty %}
+                                                                                                    <small>🤷‍♂️ Файлов нет...</small>
+                                                                                                {% endfor %}
+                                                                                            </div>
+                                                                                            <hr>
+
+                                                                                            <div class="mb-3 form-group">
+        <!--                                                                                            {{ change_dflt_txt_form.dflt_txt }}-->
+                                                                                                <textarea class="form-control" placeholder="Текст сообщения" maxlength="500" style="height:80px;" rows="3" name="mailing_text" required="required">{{ i_client.custom_mlng_txt }}</textarea>
+                                                                                            </div>
+                                                                                    </div><!--//app-card-body-->
+                                                                                </div><!--//app-card-->
+                                                                            </div>
+                                                                        </div><!--//row-->
+                                                                        <!-- //modal-body -->
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                                                                        <button type="submit" class="btn app-btn-primary">Сохранить</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+    <!--                                                    МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ СТРОКИ (конец)-->
+                                                        <tr>
+                                                            <td client-id="{{ i_client.client_id }}" class="cell" style="width: 20%;">{{ i_client.client_name }}</td>
+                                                            <td class="cell" style="width: 14%;">{{ i_client.telephone_or_username }}</td>
+                                                            <td class="cell" style="width: 9%;">{{ i_client.pmnt_date }}</td>
+                                                            <td class="cell" style="width: 9%;">{{ i_client.amount_of_pmnt }}</td>
+                                                            <td class="cell text-break" style="width: 25%;">
+                                                                <span class="truncate">
+                                                                    {{ i_client.custom_mlng_txt }}
+                                                                </span>
+                                                            </td>
+                                                            <td class="cell" style="width: 14%;">
+                                                                {% for i_file in i_client.files_lst %}
+                                                                    <a href="{% url 'app_collector:dwnld_clients_file' file_name=i_file.file_name %}">{{ i_file.file_name }}</a><br>
+                                                                {% empty %}
+                                                                    🤷‍♂️
+                                                                {% endfor %}
+                                                            </td>
+                                                            <td class="cell col-sm-1" style="width: 4%;">
+    <!--                                                                кнопка редактирования строки таблицы-->
+                                                                <a class="create-btn btn app-btn-secondary" href="#client-add-{{ i_client.client_id }}" data-bs-toggle="modal" role="button">
+    <!--                                                                    <a class="btn btn-primary" data-bs-toggle="modal" href="#exampleModalToggle" role="button">Open first modal</a>-->
+                                                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
+                                                                    </svg>
+                                                                </a>
+                                                            </td>
+                                                            <td class="cell col-sm-1" style="width: 4%;">
+    <!--                                                                кнопка удаления строки таблицы-->
+                                                                <form method="post" action="{% url 'app_collector:dlt_client' %}">
+                                                                    {% csrf_token %}
+                                                                    <input type="hidden" name="delete_client_by_id" value="{{ i_client.client_id }}">
+                                                                    <button class="delete-btn btn app-btn-secondary" type="submit">
+                                                                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                                        </svg>
+                                                                    </button>
+                                                                </form>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        {% else %}
+                                        <p><b>🤷‍♂️ Сперва к учётной записи нужно подключить Telegram.<br><a href="{% url 'app_users:input_tlg_phone'%}">Давайте сделаем это!</a></b></p>
+                                        {% endif %}
+                                    </div><!--//table-responsive-->
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+
+                            <!--						ПАГИНАЦИЯ ДЛЯ ТАБЛИЦЫ. -->
+                            <nav class="app-pagination">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item {% if not clients_lst.has_previous %} disabled {% endif %}">
+                                        <a
+                                                class="page-link"
+                                                href="{% if clients_lst.has_previous %} {% url 'app_collector:mlng_lst_page' clients_lst.previous_page_number %} {% else %} # {% endif %}"
+                                                tabindex="-1" aria-disabled="true"
+                                        >Назад</a>
+                                    </li>
+                                    {% for i_page in clients_lst.paginator.page_range %}
+                                        <li class="page-item {% if clients_lst.number == i_page %} active {% endif %}">
+                                            <a class="page-link" href="{% url 'app_collector:mlng_lst_page' i_page %}">{{ i_page }}</a>
+                                        </li>
+                                    {% endfor %}
+<!--                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>-->
+<!--                                    <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                                    <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+                                    <li class="page-item {% if not clients_lst.has_next %} disabled {% endif %}">
+                                        <a
+                                                class="page-link"
+                                                href="{% if clients_lst.has_next %} {% url 'app_collector:mlng_lst_page' clients_lst.next_page_number %} {% else %} # {% endif %}"
+                                        >Вперёд</a>
+                                    </li>
+                                </ul>
+                            </nav><!--//app-pagination-->
+
+                        </div><!--//tab-pane-->
+                    </div>
+                </div><!--//container-fluid-->
+            </div><!--//app-content-->
+
+            <footer class="app-footer">
+                <div class="container text-center py-3">
+                    <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+                    <small class="copyright">With love <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> from <a class="app-link" href="https://cfunalog.ru/" target="_blank">CFU</a></small>
+
+                </div>
+            </footer><!--//app-footer-->
+        </div><!--//app-wrapper-->
+
+
+        <!-- Javascript -->
+        <script src="/static/assets/plugins/popper.min.js"></script>
+        <script src="/static/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+        <!--НАПИСАЛ chatgpt-->
+        <!--Действия с таблицей-->
+        <script>
+                        // Этот скрипт как раз и совершает какие-либо действия с таблицей. На данный момент я использую только удаление.
+
+//                        const table = document.querySelector("#orders-table-tab-content");
+//                        table.addEventListener("click", function (e) {
+//                            if (e.target.classList.contains("delete-btn")) {
+//                                // delete the row
+//                                const row = e.target.closest("tr");
+//                                row.remove();
+//                            } else if (e.target.classList.contains("edit-btn")) {
+//                                // turn the row into an edit form
+//                                const row = e.target.closest("tr");
+//                                let field1 = row.querySelector("td:first-child").textContent;
+//                                let field2 = row.querySelector("td:nth-child(2)").textContent;
+//                                let field3 = row.querySelector("td:nth-child(3)").textContent;
+//                                let field4 = row.querySelector("td:nth-child(4)").textContent;
+//                                let field5 = row.querySelector("td:nth-child(5)").textContent;
+//
+//                                row.innerHTML = `
+//                        <td>${field1}</td>
+//                        <td>${field2}</td>
+//                        <td>${field3}</td>
+//                        <td>${field4}</td>
+//                        <td>${field5}</td>
+//                        <td>
+//                          <button class="save-btn">Save</button>
+//                          <button class="cancel-btn">Cancel</button>
+//                        </td>
+//                  `;
+//                            } else if (e.target.classList.contains("cancel-btn")) {
+//                                // turn the form back into a row
+//                                const form = e.target.closest("tr");
+//                                const field1 = form.getElementById("pop-upFeld1").value;
+//                                const field2 = form.getElementById("pop-upFeld2").value;
+//                                const field3 = form.getElementById("pop-upFeld3").value;
+//                                const field4 = form.getElementById("pop-upFeld4").value;
+//                                const field5 = form.getElementById("pop-upFeld5").value;
+//
+//                                form.innerHTML = `
+//                        <td>${field1}</td>
+//                        <td>${field2}</td>
+//                        <td>${field3}</td>
+//                        <td>${field4}</td>
+//                        <td>${field5}</td>
+//                        <td>
+//                          <button class="edit-btn">Edit</button>
+//                          <button class="delete-btn">Delete</button>
+//                        </td>
+//                  `;
+//                            } else if (e.target.classList.contains("save-btn")) {
+//                                // save the changes to the row
+//                                const form = e.target.closest("tr");
+//                                const field1 = form.getElementById("pop-upFeld1").value;
+//                                const field2 = form.getElementById("pop-upFeld2").value;
+//                                const field3 = form.getElementById("pop-upFeld3").value;
+//                                const field4 = form.getElementById("pop-upFeld4").value;
+//                                const field5 = form.getElementById("pop-upFeld5").value;
+//
+//                                form.innerHTML = `
+//                        <td>${field1}</td>
+//                        <td>${field2}</td>
+//                        <td>${field3}</td>
+//                        <td>${field4}</td>
+//                        <td>${field5}</td>
+//                        <td>
+//                          <button class="edit-btn">Edit</button>
+//                          <button class="delete-btn">Delete</button>
+//                        </td>
+//                  `;
+//                                // You would add a save function here to persist the changes to the server
+//                            }
+//                        });
+        </script>
+
+        <!--Здесь что-то волшебное происходит. Вроде бы я как раз пытался редактировать каждую строку прямо внутри таблицы-->
+        <script>
+            // Select the table body
+            const tableBody = document.querySelector("tbody");
+
+            // Select the "Save" button
+            const saveButton = document.querySelector(".btn-success");
+
+            // Add an event listener to the "Save" button
+            saveButton.addEventListener("click", function (event) {
+                event.preventDefault(); // prevent the form from submitting
+
+                // Create a new table row
+                const newRow = document.createElement("tr");
+
+                // Create the form elements for the new row
+                const formRow = document.createElement("form");
+                const field1 = document.createElement("input");
+                const field2 = document.createElement("input");
+                const field3 = document.createElement("input");
+                const field4 = document.createElement("input");
+                const field5 = document.createElement("input");
+                const saveBtn = document.createElement("button");
+
+                // Add the appropriate classes and attributes to the form elements
+                formRow.classList.add("form-row");
+                field1.classList.add("form-control");
+                field1.setAttribute("type", "text");
+                field1.setAttribute("name", "field1");
+                field1.setAttribute("placeholder", "Enter Field 1");
+                field2.classList.add("form-control");
+                field2.setAttribute("type", "text");
+                field2.setAttribute("name", "field2");
+                field2.setAttribute("placeholder", "Enter Field 2");
+                field3.classList.add("form-control");
+                field3.setAttribute("type", "text");
+                field3.setAttribute("name", "field3");
+                field3.setAttribute("placeholder", "Enter Field 3");
+                field4.classList.add("form-control");
+                field4.setAttribute("type", "number");
+                field4.setAttribute("name", "field4");
+                field4.setAttribute("placeholder", "Enter Field 4");
+                field5.classList.add("form-control");
+                field5.setAttribute("type", "date");
+                field5.setAttribute("name", "field5");
+                field5.setAttribute("placeholder", "Enter Field 5");
+                saveBtn.classList.add("btn", "btn-success");
+                saveBtn.setAttribute("type", "submit");
+                saveBtn.textContent = "Save";
+
+                // Append the form elements to the new row
+                formRow.appendChild(field1);
+                formRow.appendChild(field2);
+                formRow.appendChild(field3);
+                formRow.appendChild(field4);
+                formRow.appendChild(field5);
+                formRow.appendChild(saveBtn);
+                newRow.appendChild(formRow);
+
+                // Append the new row to the table body
+                tableBody.appendChild(newRow);
+            });
+        </script>
+        <!--Раскрывает поп-ап окно с настройками рассылки-->
+        <!--        <script>
+                    function toggleTable() {
+                        var tableContainer = document.getElementById("table-container");
+                        if (tableContainer.style.display === "none") {
+                            tableContainer.style.display = "block";
+                        } else {
+                            tableContainer.style.display = "none";
+                        }
+                    }
+                </script>-->
+        <!--Скрипт, который выполняет POST запрос. Вроде бы не актуален-->
+        <script src="/static/chatgpt_static/send_table_data.js"></script>
+
+        <!-- Page Specific JS -->
+        <script src="/static/assets/js/app.js"></script>
+
+<!--        Всплывающее окно, с инфой о бонусе за регистрацию-->
+        <div class="row">
+                <div class="col-12 text-center">
+                    <div class="toast-container shadow" style="position: fixed; bottom: 120px; left: 34%;">
+                        <div class="toast fade hide" id="showPresent" aria-live="assertive" aria-atomic="true" data-bs-autohide="false" style="--bs-toast-max-width: 500px;">
+
+                        <div class="toast-header">
+                            <strong class="me-auto" style="color: #51b37f; "><i class="bi-gift-fill"></i> Поздравляем!</strong>
+                            <small></small>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            <div class="app-card p-5 text-center shadow-sm">
+                                <h2 class="title mb-4">🎁<br>А начнём мы сразу с подарков!<br><span class="font-weight-light"></span></h2>
+                                <div class="mb-4">
+                                    <big>
+                                        <p>💰 Мы хотим <b>подарить Вам {{ reg_bonus }} руб.</b> за то, что Вы к нам присоединились!</p>
+                                        <p>🎉 Мы действительно очень рады, что Вы с нами и хотим, чтобы Вы поскорее попробовали наш сервис.</p>
+                                    </big>
+                                </div>
+                                <button type="button" class="btn app-btn-primary btn-sm" data-bs-dismiss="toast">Отлично, спасибо!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            window.onload = (event) => {
+                let params = (new URL(document.location)).searchParams;
+                console.log(params);
+                console.log(params.get("visit"));
+                if(params.get("visit") == 'first') {
+                    var toastLiveExample = document.getElementById('showPresent');
+                    var toast = new bootstrap.Toast(toastLiveExample);
+                    toast.show();
+                }
+            }
+        </script>
+
+    </body>
+</html>
+

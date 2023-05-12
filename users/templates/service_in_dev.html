@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>🐦404</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="/static/assets/plugins/fontawesome/js/all.min.js"></script>
+
+    <!-- App CSS -->
+    <link id="theme-style" rel="stylesheet" href="/static/assets/css/portal.css">
+
+</head>
+
+<body class="app app-404-page">
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+       m[i].l=1*new Date();
+       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+       ym(92703690, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+       });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/92703690" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+
+
+        <!-- Напишите нам. Модальное окно-->
+        <!-- Modal -->
+        <div class="modal fade" id="readUsModal" tabindex="-1" aria-labelledby="readUs-downloadLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg1">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title" id="readUs-downloadLabel">Форма обратной связи</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form class="" method="post" action="{% url 'app_collector:feedback' %}">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <!-- modal-body -->
+                            <div class="row g-1 settings-section  p-3">
+                                <div class="col-12">
+                                    <h5 class="text-center text-primary">Напишите нам</h5>
+                                    <div class="app-card app-card-settings">
+                                        <div class="app-card-body">
+                                            <div class="form-floating">
+                                                {{ feedback_form.feedback_text }}
+<!--                                                <textarea style="height: 200px" class="form-control" id="text-read-us"></textarea>-->
+                                                <!-- <label for="text-read-us">Текст...</label>-->
+                                            </div>
+                                        </div><!--//app-card-body-->
+                                    </div><!--//app-card-->
+                                </div>
+                            </div><!--//row-->
+                            <!-- //modal-body -->
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn app-btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn app-btn-primary" >Отправить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <script>
+            // Показать форму Напишите нам
+            function readUsModal() {
+                var formReadUsModal = new bootstrap.Modal(document.getElementById('readUsModal'));
+                formReadUsModal.show();
+            }
+        </script>
+
+
+    <div class="container mb-5">
+	    <div class="row">
+		    <div class="col-12 col-md-11 col-lg-7 col-xl-6 mx-auto">
+			    <div class="app-branding text-center mb-5">
+		            <a class="app-logo" href="{% url 'app_collector:mailing' %}"><img class="logo-icon me-2" src="/static/assets/images/app-logo-1.jpg" alt="logo"><span class="logo-text">DYATEL</span></a>
+
+		        </div><!--//app-branding-->
+			    <div class="app-card p-5 text-center shadow-sm">
+				    <h1 class="page-title mb-4">🔧<br><span class="font-weight-light">В разработке</span></h1>
+				    <div class="mb-4">
+                        Сервис ещё не готов, но мы работает над этим. Если у Вас возникли проблемы с балансом, то <a class="" href="#"  onclick="readUsModal()">напишите нам.</a>
+				    </div>
+				    <a class="btn app-btn-primary" href="{% url 'app_collector:mailing' %}">Главная</a>
+			    </div>
+		    </div><!--//col-->
+	    </div><!--//row-->
+    </div><!--//container-->
+
+
+    <footer class="app-footer">
+        <div class="container text-center py-3">
+            <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+            <small class="copyright">With love <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> from <a class="app-link" href="https://cfunalog.ru/" target="_blank">CFU</a></small>
+
+        </div>
+    </footer><!--//app-footer-->
+
+    <!-- Javascript -->
+    <script src="/static/assets/plugins/popper.min.js"></script>
+    <script src="/static/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Charts JS -->
+    <script src="/static/assets/plugins/chart.js/chart.min.js"></script>
+    <script src="/static/assets/js/charts-custom.js"></script>
+
+    <!-- Page Specific JS -->
+    <script src="/static/assets/js/app.js"></script>
+
+</body>
+</html>
+
